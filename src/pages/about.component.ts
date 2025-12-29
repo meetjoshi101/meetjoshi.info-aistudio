@@ -23,7 +23,8 @@ import { NgOptimizedImage } from '@angular/common';
         <div class="order-1 md:order-2 relative">
           <div class="aspect-[3/4] bg-stone-200 relative overflow-hidden">
              <!-- ID 338 or 91 usually good, let's go with 64 for portrait or 996 -->
-             <img ngSrc="https://picsum.photos/id/996/800/800" fill class="object-cover grayscale hover:grayscale-0 transition-all duration-1000" alt="Profile">
+             <!-- Added priority here -->
+             <img ngSrc="https://picsum.photos/id/996/800/800" priority fill class="object-cover grayscale hover:grayscale-0 transition-all duration-1000" alt="Profile">
           </div>
           <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-gold-500 z-[-1]"></div>
         </div>

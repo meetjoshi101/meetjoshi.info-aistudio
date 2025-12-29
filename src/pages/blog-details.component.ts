@@ -39,7 +39,8 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
         <!-- Feature Image -->
         <div class="w-full h-[400px] md:h-[600px] relative overflow-hidden mb-16 px-4 md:px-12">
-           <img [ngSrc]="p.imageUrl" fill class="object-cover rounded-xl shadow-2xl shadow-stone-200/50" alt="{{p.title}}">
+           <!-- Added priority here -->
+           <img [ngSrc]="p.imageUrl" priority fill class="object-cover rounded-xl shadow-2xl shadow-stone-200/50" alt="{{p.title}}">
         </div>
 
         <!-- Content Body -->

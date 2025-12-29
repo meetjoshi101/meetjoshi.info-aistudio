@@ -1,12 +1,18 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DataService, Project } from '../services/data.service';
 import { NgOptimizedImage, Location } from '@angular/common';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-project-details',
+  encapsulation: ViewEncapsulation.None,
   template: `
-    @if (project(); as p) {
+    @if (loading()) {
+      <div class="min-h-screen flex items-center justify-center">
+         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900"></div>
+      </div>
+    } @else if (project(); as p) {
       <div class="animate-fade-in pb-24">
         
         <!-- Header Section -->
@@ -48,65 +54,85 @@ import { NgOptimizedImage, Location } from '@angular/common';
 
         <!-- Hero Image -->
         <div class="w-full h-[50vh] md:h-[70vh] relative overflow-hidden bg-surface mb-24">
-          <img [ngSrc]="p.imageUrl" fill class="object-cover" alt="{{p.title}}">
+          <img [ngSrc]="p.imageUrl" priority fill class="object-cover" alt="{{p.title}}">
         </div>
 
-        <!-- Narrative Content -->
+        <!-- Content Strategy Switcher -->
         <div class="px-8 md:px-16 lg:px-24 max-w-5xl mx-auto space-y-24">
           
-          <div class="grid md:grid-cols-12 gap-12">
-            <div class="md:col-span-4">
-              <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">The Challenge</h2>
-            </div>
-            <div class="md:col-span-8">
-              <p class="text-xl md:text-2xl font-light text-stone-600 leading-relaxed">
-                {{ p.challenge || p.description }}
-              </p>
-            </div>
-          </div>
-
-          <div class="w-full h-px bg-gold-100"></div>
-
-          <div class="grid md:grid-cols-12 gap-12">
-            <div class="md:col-span-4">
-              <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">Our Solution</h2>
-            </div>
-            <div class="md:col-span-8">
-              <p class="text-lg text-stone-600 leading-relaxed mb-6">
-                {{ p.solution || 'Detailed solution description would go here, explaining the architectural decisions and design choices made during the development process.' }}
-              </p>
-              <div class="bg-surface p-8 rounded-lg border border-gold-50 my-8">
-                 <h4 class="font-serif font-bold text-gold-600 mb-4">Key Features</h4>
-                 <ul class="space-y-2">
-                   <li class="flex items-start gap-2 text-stone-700">
-                     <span class="text-gold-500 mt-1">●</span> Custom Architecture
-                   </li>
-                   <li class="flex items-start gap-2 text-stone-700">
-                     <span class="text-gold-500 mt-1">●</span> Performance Optimization
-                   </li>
-                   <li class="flex items-start gap-2 text-stone-700">
-                     <span class="text-gold-500 mt-1">●</span> Scalable Infrastructure
-                   </li>
-                 </ul>
+          <!-- Case 1: Structured Data (Fallback / Local) -->
+          @if (p.challenge || p.solution) {
+             <div class="grid md:grid-cols-12 gap-12">
+              <div class="md:col-span-4">
+                <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">The Challenge</h2>
+              </div>
+              <div class="md:col-span-8">
+                <p class="text-xl md:text-2xl font-light text-stone-600 leading-relaxed">
+                  {{ p.challenge || p.description }}
+                </p>
               </div>
             </div>
-          </div>
-          
-           <div class="w-full h-px bg-gold-100"></div>
 
-           <div class="grid md:grid-cols-12 gap-12">
-            <div class="md:col-span-4">
-              <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">The Outcome</h2>
-            </div>
-            <div class="md:col-span-8">
-               <p class="text-lg text-stone-600 leading-relaxed">
-                {{ p.outcome || 'The project was a success, meeting all KPIs and exceeding client expectations in terms of performance and user engagement.' }}
-              </p>
-              <div class="mt-12 p-8 bg-stone-900 text-gold-100 italic font-serif text-xl md:text-2xl text-center leading-relaxed rounded-xl">
-                "An absolute game-changer for our business operations."
+            <div class="w-full h-px bg-gold-100"></div>
+
+            <div class="grid md:grid-cols-12 gap-12">
+              <div class="md:col-span-4">
+                <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">Our Solution</h2>
+              </div>
+              <div class="md:col-span-8">
+                <p class="text-lg text-stone-600 leading-relaxed mb-6">
+                  {{ p.solution || 'Detailed architectural breakdown.' }}
+                </p>
+                <div class="bg-surface p-8 rounded-lg border border-gold-50 my-8">
+                   <h4 class="font-serif font-bold text-gold-600 mb-4">Key Features</h4>
+                   <ul class="space-y-2">
+                     <li class="flex items-start gap-2 text-stone-700">
+                       <span class="text-gold-500 mt-1">●</span> Custom Architecture
+                     </li>
+                     <li class="flex items-start gap-2 text-stone-700">
+                       <span class="text-gold-500 mt-1">●</span> Performance Optimization
+                     </li>
+                     <li class="flex items-start gap-2 text-stone-700">
+                       <span class="text-gold-500 mt-1">●</span> Scalable Infrastructure
+                     </li>
+                   </ul>
+                </div>
               </div>
             </div>
-          </div>
+            
+             <div class="w-full h-px bg-gold-100"></div>
+
+             <div class="grid md:grid-cols-12 gap-12">
+              <div class="md:col-span-4">
+                <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">The Outcome</h2>
+              </div>
+              <div class="md:col-span-8">
+                 <p class="text-lg text-stone-600 leading-relaxed">
+                  {{ p.outcome || 'The project was a success, meeting all KPIs and exceeding client expectations.' }}
+                </p>
+                <div class="mt-12 p-8 bg-stone-900 text-gold-100 italic font-serif text-xl md:text-2xl text-center leading-relaxed rounded-xl">
+                  "An absolute game-changer for our business operations."
+                </div>
+              </div>
+            </div>
+
+          } @else if (p.content) {
+            <!-- Case 2: HTML Content from Hashnode -->
+             <div class="grid md:grid-cols-12 gap-12">
+                <div class="md:col-span-4">
+                  <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">Case Study</h2>
+                </div>
+                <div class="md:col-span-8">
+                   <div class="prose prose-stone prose-lg 
+                       prose-headings:font-serif prose-headings:font-bold 
+                       prose-p:text-stone-600 prose-p:leading-loose 
+                       prose-a:text-gold-600 hover:prose-a:text-gold-500 
+                       prose-img:rounded-xl prose-img:shadow-lg" 
+                        [innerHTML]="p.content | safeHtml">
+                   </div>
+                </div>
+             </div>
+          }
 
         </div>
 
@@ -119,9 +145,14 @@ import { NgOptimizedImage, Location } from '@angular/common';
         </div>
 
       </div>
+    } @else {
+      <div class="min-h-screen flex flex-col items-center justify-center">
+        <h2 class="text-3xl font-serif mb-4">Project Not Found</h2>
+        <a routerLink="/projects" class="text-gold-600 underline">Back to Archive</a>
+      </div>
     }
   `,
-  imports: [NgOptimizedImage, RouterLink]
+  imports: [NgOptimizedImage, RouterLink, SafeHtmlPipe]
 })
 export class ProjectDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -129,12 +160,19 @@ export class ProjectDetailsComponent implements OnInit {
   private location = inject(Location);
   
   project = signal<Project | undefined>(undefined);
+  loading = signal(true);
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const id = +params['id'];
-      this.project.set(this.dataService.getProjectById(id));
-      window.scrollTo(0, 0);
+      const id = params['id'];
+      if (id) {
+        this.loading.set(true);
+        this.dataService.getProjectBySlug(id).subscribe(p => {
+          this.project.set(p);
+          this.loading.set(false);
+          window.scrollTo(0, 0);
+        });
+      }
     });
   }
 

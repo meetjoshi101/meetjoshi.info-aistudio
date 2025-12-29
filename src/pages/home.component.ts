@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { NgOptimizedImage } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +11,6 @@ import { NgOptimizedImage } from '@angular/common';
       
       <!-- Personal Hero with Action -->
       <section class="relative">
-        <!-- Replaced EST 2016 with a personal availability tag -->
         <span class="inline-flex items-center gap-2 bg-gold-100 text-gold-900 font-mono text-xs font-bold tracking-widest px-3 py-1 rounded-full mb-8">
            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
            AVAILABLE FOR HIRE
@@ -27,7 +27,6 @@ import { NgOptimizedImage } from '@angular/common';
              Hi, I'm <span class="text-stone-900 font-bold">Meet Joshi</span>. I craft high-performance digital experiences with a focus on <span class="text-stone-800 font-medium">soft aesthetics</span> and <span class="text-stone-800 font-medium">robust architecture</span>.
            </p>
            
-           <!-- CTA Section moved to top as requested -->
            <div class="flex flex-col gap-4 w-full md:w-auto">
              <a routerLink="/contact" class="inline-block text-center px-8 py-4 bg-stone-900 text-paper font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-white transition-all duration-300 rounded-lg shadow-xl shadow-stone-200">
                Start a Project
@@ -43,27 +42,36 @@ import { NgOptimizedImage } from '@angular/common';
       <!-- Selected Works Gallery -->
       <section>
         <div class="flex items-end justify-between mb-16">
-          <h2 class="text-3xl md:text-4xl font-serif font-medium italic text-stone-800">Selected Works</h2>
+          <div class="flex flex-col gap-2">
+            <h2 class="text-3xl md:text-4xl font-serif font-medium italic text-stone-800">Selected Works</h2>
+            <p class="text-xs font-mono text-stone-400">SOURCE: {{ dataService.projectsSource() }}</p>
+          </div>
           <span class="hidden md:block h-px flex-1 bg-gold-200 mx-8 mb-4"></span>
           <span class="text-xs font-mono text-gold-400">Recent</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
-          @for (project of featuredProjects; track project.id) {
-             <div class="group cursor-pointer" [routerLink]="['/projects', project.id]">
-               <div class="relative overflow-hidden mb-8 aspect-[4/3] bg-surface rounded-sm">
-                 <img [ngSrc]="project.imageUrl" fill class="object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100" alt="{{project.title}}">
-               </div>
-               <div class="flex justify-between items-start border-b border-stone-100 pb-4 group-hover:border-gold-300 transition-colors">
-                 <div>
-                   <h3 class="text-2xl font-serif font-medium text-stone-800 mb-2 group-hover:text-gold-600 transition-colors">{{ project.title }}</h3>
-                   <p class="text-stone-500 text-sm font-sans">{{ project.category }}</p>
+        @if (featuredProjects(); as projects) {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
+            @for (project of projects; track project.id; let i = $index) {
+               <div class="group cursor-pointer" [routerLink]="['/projects', project.id]">
+                 <div class="relative overflow-hidden mb-8 aspect-[4/3] bg-surface rounded-sm">
+                   <img [ngSrc]="project.imageUrl" [priority]="i === 0" fill class="object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100" alt="{{project.title}}">
                  </div>
-                 <span class="text-gold-300 font-serif italic text-xl group-hover:translate-x-2 transition-transform">→</span>
+                 <div class="flex justify-between items-start border-b border-stone-100 pb-4 group-hover:border-gold-300 transition-colors">
+                   <div>
+                     <h3 class="text-2xl font-serif font-medium text-stone-800 mb-2 group-hover:text-gold-600 transition-colors">{{ project.title }}</h3>
+                     <p class="text-stone-500 text-sm font-sans">{{ project.category }}</p>
+                   </div>
+                   <span class="text-gold-300 font-serif italic text-xl group-hover:translate-x-2 transition-transform">→</span>
+                 </div>
                </div>
-             </div>
-          }
-        </div>
+            }
+          </div>
+        } @else {
+           <div class="flex justify-center py-12">
+             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-300"></div>
+           </div>
+        }
       </section>
 
       <!-- Skills (Softer presentation) -->
@@ -79,8 +87,13 @@ import { NgOptimizedImage } from '@angular/common';
   imports: [RouterLink, NgOptimizedImage]
 })
 export class HomeComponent {
-  private dataService = inject(DataService);
-  featuredProjects = this.dataService.getProjects().slice(0, 4); 
+  public dataService = inject(DataService);
+  
+  projectsSignal = toSignal(this.dataService.getProjects());
+  
+  featuredProjects = computed(() => {
+    return this.projectsSignal()?.slice(0, 4);
+  });
 
   skills = [
     { name: 'Angular' },
