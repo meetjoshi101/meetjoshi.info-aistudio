@@ -1,0 +1,68 @@
+<div class="flex flex-col md:flex-row min-h-screen relative">
+  
+  <!-- Desktop Sidebar -->
+  <aside class="hidden md:flex flex-col justify-between w-72 lg:w-80 fixed h-screen p-10 border-r border-gold-100 bg-paper/90 backdrop-blur-md z-50">
+    <div>
+      <a routerLink="/" class="block mb-16 group">
+        <div class="w-10 h-10 bg-gold-500 rounded-lg mb-4 opacity-90 group-hover:opacity-100 group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-gold-200"></div>
+        <span class="text-3xl font-serif font-black tracking-tighter text-stone-800 group-hover:text-gold-600 transition-colors">Meet Joshi.</span>
+      </a>
+      
+      <nav class="flex flex-col gap-6">
+        @for (link of links; track link.path) {
+          <a [routerLink]="link.path" 
+             routerLinkActive="text-gold-600 pl-4 border-l-2 border-gold-400 font-bold" 
+             [routerLinkActiveOptions]="{exact: link.path === '/'}" 
+             class="text-lg font-medium text-stone-500 hover:text-stone-800 hover:pl-2 transition-all duration-300 font-serif tracking-tight">
+            {{ link.label }}
+          </a>
+        }
+      </nav>
+    </div>
+
+    <div class="space-y-6">
+       <div class="h-px w-12 bg-gold-200"></div>
+       <div class="flex gap-4 opacity-60">
+         <a href="#" class="hover:text-gold-600 transition-colors">Li</a>
+         <a href="#" class="hover:text-gold-600 transition-colors">Tw</a>
+         <a href="#" class="hover:text-gold-600 transition-colors">Gh</a>
+       </div>
+       <p class="text-xs text-stone-400 font-mono">© 2024 Meet Joshi</p>
+    </div>
+  </aside>
+
+  <!-- Mobile Header -->
+  <header class="md:hidden sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-gold-100 px-6 py-4 flex items-center justify-between">
+    <a routerLink="/" class="text-xl font-serif font-black tracking-tighter flex items-center gap-2">
+      <div class="w-4 h-4 bg-gold-500 rounded-sm"></div>
+      Meet Joshi.
+    </a>
+    <button (click)="toggleMenu()" class="p-2 -mr-2 text-stone-800">
+      @if (isMenuOpen()) {
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      } @else {
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      }
+    </button>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  @if (isMenuOpen()) {
+    <div class="md:hidden fixed inset-0 top-16 z-40 bg-paper px-6 py-8 animate-fade-in">
+      <nav class="flex flex-col gap-6 text-center">
+        @for (link of links; track link.path) {
+          <a [routerLink]="link.path" (click)="toggleMenu()" class="text-2xl font-serif font-bold text-stone-700 py-2 border-b border-gold-100 hover:text-gold-600">
+            {{ link.label }}
+          </a>
+        }
+      </nav>
+    </div>
+  }
+
+  <!-- Main Content Area -->
+  <main class="flex-1 md:ml-72 lg:ml-80 min-h-screen bg-paper relative overflow-hidden">
+     <!-- subtle grain -->
+     <div class="absolute top-0 left-0 w-full h-full opacity-[0.04] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
+     <router-outlet></router-outlet>
+  </main>
+</div>
