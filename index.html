@@ -6,8 +6,8 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS with Typography Plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,22 @@
               900: '#78350F',
               950: '#451A03',
             }
-          }
+          },
+          typography: (theme) => ({
+            DEFAULT: {
+              css: {
+                color: theme('colors.stone.600'),
+                h1: { fontFamily: theme('fontFamily.serif') },
+                h2: { fontFamily: theme('fontFamily.serif') },
+                h3: { fontFamily: theme('fontFamily.serif') },
+                h4: { fontFamily: theme('fontFamily.serif') },
+                '--tw-prose-body': theme('colors.stone.600'),
+                '--tw-prose-headings': theme('colors.stone.900'),
+                '--tw-prose-links': theme('colors.gold.600'),
+                '--tw-prose-links-hover': theme('colors.gold.500'),
+              },
+            },
+          }),
         }
       }
     }
@@ -74,7 +89,9 @@
     "@angular/core": "https://esm.sh/@angular/core@^21.0.6?external=rxjs",
     "@angular/common": "https://esm.sh/@angular/common@^21.0.6?external=rxjs",
     "@angular/forms": "https://esm.sh/@angular/forms@^21.0.6?external=rxjs",
-    "@angular/router": "https://esm.sh/@angular/router@^21.0.6?external=rxjs"
+    "@angular/router": "https://esm.sh/@angular/router@^21.0.6?external=rxjs",
+    "@angular/common/http": "https://esm.sh/@angular/common@^21.0.6/http?external=rxjs",
+    "@angular/core/rxjs-interop": "https://esm.sh/@angular/core@^21.0.6/rxjs-interop?external=rxjs"
   }
 }
 </script>

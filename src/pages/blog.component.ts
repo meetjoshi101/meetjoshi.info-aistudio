@@ -1,8 +1,9 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { DataService } from '../services/data.service';
-import { NgOptimizedImage } from '@angular/common';
+import { DataService, BlogPost } from '../services/data.service';
+import { NgOptimizedImage, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-blog',
@@ -20,6 +21,13 @@ import { RouterLink } from '@angular/router';
           >
         </div>
       </div>
+
+      <!-- Loading State -->
+      @if (!postsSignal()) {
+        <div class="flex justify-center py-24">
+           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900"></div>
+        </div>
+      }
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
         @for (post of filteredPosts(); track post.id) {
@@ -47,7 +55,7 @@ import { RouterLink } from '@angular/router';
           </article>
         }
         
-        @if (filteredPosts().length === 0) {
+        @if (postsSignal() && filteredPosts().length === 0) {
            <div class="col-span-full text-center py-20">
              <p class="text-stone-400 font-serif italic text-2xl">No stories found.</p>
            </div>
@@ -59,12 +67,19 @@ import { RouterLink } from '@angular/router';
 })
 export class BlogComponent {
   private dataService = inject(DataService);
-  posts = this.dataService.getBlogPosts();
+  
+  // Converts Observable to Signal
+  postsSignal = toSignal(this.dataService.getBlogPosts());
+  
   searchQuery = signal('');
 
   filteredPosts = computed(() => {
+    const posts = this.postsSignal() || [];
     const query = this.searchQuery().toLowerCase();
-    return this.posts.filter(p => 
+    
+    if (!query) return posts;
+
+    return posts.filter(p => 
       p.title.toLowerCase().includes(query) || 
       p.excerpt.toLowerCase().includes(query) ||
       p.category.toLowerCase().includes(query)

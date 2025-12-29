@@ -2,12 +2,17 @@ import { Component, inject, signal, OnInit, ViewEncapsulation } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DataService, BlogPost } from '../services/data.service';
 import { NgOptimizedImage, Location } from '@angular/common';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-blog-details',
   encapsulation: ViewEncapsulation.None, // Allow styling of inner HTML
   template: `
-    @if (post(); as p) {
+    @if (loading()) {
+      <div class="min-h-screen flex items-center justify-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900"></div>
+      </div>
+    } @else if (post(); as p) {
       <article class="animate-fade-in pb-24">
         
         <!-- Header -->
@@ -37,11 +42,33 @@ import { NgOptimizedImage, Location } from '@angular/common';
            <img [ngSrc]="p.imageUrl" fill class="object-cover rounded-xl shadow-2xl shadow-stone-200/50" alt="{{p.title}}">
         </div>
 
-        <!-- Content -->
+        <!-- Content Body -->
         <div class="px-6 max-w-3xl mx-auto">
-           <div class="prose prose-stone prose-lg md:prose-xl prose-headings:font-serif prose-headings:font-bold prose-p:text-stone-600 prose-p:leading-loose prose-a:text-gold-600 hover:prose-a:text-gold-500 first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-5px] first-letter:text-gold-500" 
-                [innerHTML]="p.content">
+           <!-- Hashnode content returns raw HTML which often needs specific styling classes -->
+           <!-- Added SafeHtml pipe and prose classes from Tailwind Typography -->
+           <div class="prose prose-stone prose-lg md:prose-xl 
+                       prose-headings:font-serif prose-headings:font-bold 
+                       prose-p:text-stone-600 prose-p:leading-loose 
+                       prose-a:text-gold-600 hover:prose-a:text-gold-500 
+                       prose-img:rounded-xl prose-img:shadow-lg
+                       first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-5px] first-letter:text-gold-500" 
+                [innerHTML]="p.content | safeHtml">
            </div>
+
+           <!-- Gallery Grid for Multiple Images -->
+           @if (p.galleryImages && p.galleryImages.length > 0) {
+             <div class="mt-16 mb-8">
+               <h3 class="font-serif font-bold text-2xl mb-8 text-stone-900">Visual Story</h3>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 @for (img of p.galleryImages; track img) {
+                   <div class="relative h-64 md:h-72 overflow-hidden rounded-lg bg-stone-100 group">
+                      <img [ngSrc]="img" fill class="object-cover transition-transform duration-700 group-hover:scale-105" alt="Story detail">
+                   </div>
+                 }
+               </div>
+               <p class="text-xs text-stone-400 font-mono mt-4 text-center">Images from the article archive.</p>
+             </div>
+           }
            
            <!-- Tags / Share -->
            <div class="mt-16 pt-8 border-t border-stone-200 flex justify-between items-center">
@@ -70,21 +97,34 @@ import { NgOptimizedImage, Location } from '@angular/common';
         </div>
 
       </article>
+    } @else {
+      <div class="min-h-screen flex flex-col items-center justify-center p-8">
+         <h1 class="text-4xl font-serif font-bold mb-4">Post not found</h1>
+         <p class="text-stone-500 mb-8">The article you are looking for does not exist or has been moved.</p>
+         <a routerLink="/blog" class="text-gold-600 font-bold hover:underline">Back to Journal</a>
+      </div>
     }
   `,
-  imports: [NgOptimizedImage, RouterLink]
+  imports: [NgOptimizedImage, RouterLink, SafeHtmlPipe]
 })
 export class BlogDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private dataService = inject(DataService);
   
   post = signal<BlogPost | undefined>(undefined);
+  loading = signal(true);
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const id = +params['id'];
-      this.post.set(this.dataService.getBlogPostById(id));
-      window.scrollTo(0, 0);
+      const slug = params['id'];
+      if (slug) {
+        this.loading.set(true);
+        this.dataService.getBlogPostBySlug(slug).subscribe(data => {
+          this.post.set(data);
+          this.loading.set(false);
+          window.scrollTo(0, 0);
+        });
+      }
     });
   }
 }
