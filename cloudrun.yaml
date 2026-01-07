@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: meetjoshi-portfolio
+  labels:
+    cloud.googleapis.com/location: us-central1
+spec:
+  template:
+    metadata:
+      annotations:
+        # Auto-scale configuration
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '10'
+        # CPU throttling (reduces cost for low traffic)
+        run.googleapis.com/cpu-throttling: 'true'
+        # Startup CPU boost for faster cold starts
+        run.googleapis.com/startup-cpu-boost: 'true'
+    spec:
+      # Maximum concurrent requests per instance
+      containerConcurrency: 80
+      # Request timeout
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/meetjoshi-portfolio:latest
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        - name: SUPABASE_URL
+          value: 'YOUR_SUPABASE_URL'
+        - name: SUPABASE_ANON_KEY
+          value: 'YOUR_SUPABASE_ANON_KEY'
+        resources:
+          limits:
+            cpu: '1000m'
+            memory: '512Mi'

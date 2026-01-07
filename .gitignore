@@ -11,6 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+.angular
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
 
 # Editor directories and files
 .vscode/*

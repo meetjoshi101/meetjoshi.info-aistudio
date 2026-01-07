@@ -15,10 +15,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
           <!-- Data Source Indicator -->
           <div class="flex items-center gap-2 mt-2">
              <span class="relative flex h-2 w-2">
-               @if(dataService.dataSource() === 'Hashnode API') {
+               @if(dataService.dataSource() === 'Supabase') {
                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                }
-               <span class="relative inline-flex rounded-full h-2 w-2" [class.bg-green-500]="dataService.dataSource() === 'Hashnode API'" [class.bg-stone-400]="dataService.dataSource() !== 'Hashnode API'"></span>
+               <span class="relative inline-flex rounded-full h-2 w-2" [class.bg-green-500]="dataService.dataSource() === 'Supabase'" [class.bg-stone-400]="dataService.dataSource() !== 'Supabase'"></span>
              </span>
              <span class="text-[10px] font-mono font-bold text-stone-400 uppercase tracking-widest">
                Source: {{ dataService.dataSource() }}
@@ -26,26 +26,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
           </div>
         </div>
         
-        <div class="flex flex-col gap-4 w-full md:w-auto items-end">
-           <input 
-            type="text" 
-            [(ngModel)]="searchQuery"
-            placeholder="Type to search..."
-            class="w-full md:w-64 bg-transparent border-b border-stone-300 py-2 pr-8 focus:outline-none focus:border-gold-500 text-stone-900 placeholder-stone-400 font-serif italic"
-          >
-          
-          <!-- Admin Sync Button -->
-          <div class="flex flex-col items-end">
-            <button (click)="syncToHashnode()" [disabled]="isSyncing()" class="text-xs font-mono text-stone-400 hover:text-gold-600 disabled:opacity-50 underline decoration-dotted">
-              @if (isSyncing()) { Syncing... } @else { [Admin: Upload Default Posts] }
-            </button>
-            @if (syncStatus()) {
-              <span class="text-[10px] font-mono mt-1" [class.text-green-600]="syncStatus().includes('Success')" [class.text-red-500]="syncStatus().includes('Fail')">
-                {{ syncStatus() }}
-              </span>
-            }
-          </div>
-        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Type to search..."
+          class="w-full md:w-64 bg-transparent border-b border-stone-300 py-2 pr-8 focus:outline-none focus:border-gold-500 text-stone-900 placeholder-stone-400 font-serif italic"
+        >
       </div>
 
       <!-- Loading State -->
@@ -93,54 +79,22 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class BlogComponent {
   public dataService = inject(DataService);
-  
+
   // Converts Observable to Signal
   postsSignal = toSignal(this.dataService.getBlogPosts());
-  
+
   searchQuery = signal('');
-  isSyncing = signal(false);
-  syncStatus = signal('');
 
   filteredPosts = computed(() => {
     const posts = this.postsSignal() || [];
     const query = this.searchQuery().toLowerCase();
-    
+
     if (!query) return posts;
 
-    return posts.filter(p => 
-      p.title.toLowerCase().includes(query) || 
+    return posts.filter(p =>
+      p.title.toLowerCase().includes(query) ||
       p.excerpt.toLowerCase().includes(query) ||
       p.category.toLowerCase().includes(query)
     );
   });
-
-  syncToHashnode() {
-    if (!confirm('This will upload the local default posts to your Hashnode blog. Continue?')) return;
-    
-    this.isSyncing.set(true);
-    this.syncStatus.set('Initializing...');
-
-    this.dataService.syncLocalPostsToHashnode().subscribe({
-      next: (results: any[]) => {
-        const successes = results.filter(r => r.success).length;
-        const failures = results.filter(r => !r.success);
-        
-        if (failures.length > 0) {
-           console.warn('Some posts failed to upload:', failures);
-           this.syncStatus.set(`Done: ${successes} uploaded, ${failures.length} failed (check console).`);
-           alert(`Upload Complete.\nSuccess: ${successes}\nFailed: ${failures.length}\n\nCheck console for error details (likely duplicate slugs).`);
-        } else {
-           this.syncStatus.set(`Success! All ${successes} posts uploaded.`);
-           alert('Successfully uploaded all posts to Hashnode!');
-        }
-        this.isSyncing.set(false);
-      },
-      error: (err) => {
-        console.error(err);
-        this.syncStatus.set('Failed. See console.');
-        alert('Failed to upload. Ensure API Key is valid and Host URL matches your blog.');
-        this.isSyncing.set(false);
-      }
-    });
-  }
 }
