@@ -247,58 +247,38 @@ Copy this URL and visit it in your browser!
 
 ---
 
-## 🔄 Part 5: CI/CD with GitHub Actions (Optional)
+## 🤖 Part 5: Automated CI/CD with GitHub Actions
 
-Create `.github/workflows/deploy.yml`:
+**⚡ Recommended for automatic deployments!**
 
-```yaml
-name: Deploy to Cloud Run
+Instead of manually deploying, set up GitHub Actions for automatic deployments on every push to `main`.
 
-on:
-  push:
-    branches: [ main ]
+### Quick Setup
 
-env:
-  PROJECT_ID: meetjoshi-portfolio
-  SERVICE: meetjoshi-portfolio
-  REGION: us-central1
+1. **Follow the detailed setup guide**: `.github/SETUP.md`
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+2. **Add GitHub Secrets** (Required):
+   - `GCP_PROJECT_ID` - Your Google Cloud project ID
+   - `GCP_SA_KEY` - Service account JSON key
+   - `SUPABASE_URL` - Your Supabase project URL
+   - `SUPABASE_ANON_KEY` - Your Supabase anon key
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+3. **Push to main branch** - Deployment happens automatically!
 
-    - name: Setup Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ env.PROJECT_ID }}
+### What You Get
 
-    - name: Authorize Docker push
-      run: gcloud auth configure-docker
+✅ **Automatic deployments** on push to `main`
+✅ **PR validation** with Docker build tests
+✅ **Deployment summaries** with service URL
+✅ **Manual triggers** via GitHub UI
+✅ **Build caching** for faster deployments
 
-    - name: Build and Push Container
-      run: |
-        docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }} .
-        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}
+### Workflows Included
 
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy ${{ env.SERVICE }} \
-          --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }} \
-          --platform managed \
-          --region ${{ env.REGION }} \
-          --allow-unauthenticated \
-          --set-env-vars SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-```
+- **`deploy.yml`** - Builds, pushes to GCR, deploys to Cloud Run
+- **`pr-validation.yml`** - Validates PRs before merge
 
-**GitHub Secrets to add**:
-- `GCP_SA_KEY`: Service account JSON key
-- `SUPABASE_URL`: Your Supabase project URL
-- `SUPABASE_ANON_KEY`: Your Supabase anon key
+**📖 Full documentation**: See `.github/SETUP.md` for complete setup instructions
 
 ---
 
