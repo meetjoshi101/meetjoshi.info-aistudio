@@ -1,6 +1,10 @@
 # Stage 1: Build the Angular application
 FROM node:20-alpine AS builder
 
+# Accept build arguments for Supabase configuration
+ARG SUPABASE_URL
+ARG SUPABASE_ANON_KEY
+
 WORKDIR /app
 
 # Copy package files
@@ -11,6 +15,10 @@ RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
+
+# Replace placeholder values in environment.prod.ts with actual values
+RUN sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" src/environments/environment.prod.ts && \
+    sed -i "s|YOUR_SUPABASE_ANON_KEY|${SUPABASE_ANON_KEY}|g" src/environments/environment.prod.ts
 
 # Build the Angular application for production
 RUN npm run build
