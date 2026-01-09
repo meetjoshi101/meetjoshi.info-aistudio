@@ -1,0 +1,270 @@
+/* EditorJS Admin Editor Styles */
+/* Custom styling for EditorJS editor in admin panel */
+
+.codex-editor {
+  font-family: inherit;
+}
+
+.codex-editor__redactor {
+  padding-bottom: 150px !important;
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 100%;
+}
+
+/* Toolbar styling */
+.ce-toolbar__plus {
+  color: #D97706; /* amber-600 */
+}
+
+.ce-toolbar__plus:hover {
+  background-color: #FEF3C7; /* amber-50 */
+}
+
+/* Inline toolbar, conversion toolbar, and settings */
+.ce-inline-toolbar,
+.ce-conversion-toolbar,
+.ce-settings {
+  background-color: #1C1917; /* stone-900 */
+  border: 1px solid #44403C; /* stone-700 */
+  color: #FAFAF9; /* stone-50 */
+}
+
+.ce-inline-tool,
+.ce-conversion-tool,
+.ce-settings__button {
+  color: #FAFAF9;
+}
+
+.ce-inline-tool:hover,
+.ce-conversion-tool:hover,
+.ce-settings__button:hover {
+  background-color: #44403C;
+}
+
+/* Popover styles */
+.ce-popover {
+  background-color: #1C1917;
+  border: 1px solid #44403C;
+}
+
+.ce-popover__item {
+  color: #FAFAF9;
+}
+
+.ce-popover__item:hover {
+  background-color: #44403C;
+}
+
+.ce-popover__item-icon {
+  background-color: transparent !important;
+}
+
+/* Image block styles */
+.cdx-block.image-tool {
+  padding: 1rem 0;
+}
+
+.image-tool__image-picture {
+  border-radius: 0.5rem;
+}
+
+.cdx-input.image-tool__caption {
+  border: 1px solid #D6D3D1;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.image-tool__caption[contentEditable=true][data-placeholder]::before {
+  color: #A8A29E;
+}
+
+/* Code block styles */
+.ce-code__textarea {
+  background-color: #1C1917 !important;
+  color: #FAFAF9 !important;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.5rem;
+  padding: 1rem !important;
+  min-height: 200px;
+}
+
+/* Quote block styles */
+.cdx-quote {
+  border-left: 4px solid #D97706;
+  padding-left: 1.5rem;
+  font-style: italic;
+}
+
+.cdx-quote__text {
+  font-size: 1.25rem;
+  line-height: 1.75;
+  color: #57534E;
+}
+
+.cdx-quote__caption {
+  color: #78716C;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Table styles */
+.tc-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tc-table__cell {
+  border: 1px solid #E7E5E4;
+  padding: 0.5rem 0.75rem;
+  min-width: 50px;
+}
+
+.tc-table__cell--selected {
+  background-color: #FEF3C7; /* amber-50 */
+}
+
+.tc-table__wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+/* List styles */
+.cdx-list {
+  padding-left: 1.5rem;
+}
+
+.cdx-list__item {
+  padding: 0.25rem 0;
+  line-height: 1.6;
+}
+
+.cdx-list__item-content {
+  outline: none;
+}
+
+/* Header styles */
+.ce-header {
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+/* Paragraph styles */
+.ce-paragraph {
+  line-height: 1.6em;
+  outline: none;
+}
+
+.ce-paragraph[data-placeholder]:empty::before {
+  color: #A8A29E;
+  font-weight: normal;
+}
+
+/* Delimiter styles */
+.ce-delimiter {
+  text-align: center;
+  line-height: 1.6em;
+  margin: 2rem 0;
+}
+
+.ce-delimiter::before {
+  content: '***';
+  display: inline-block;
+  font-size: 30px;
+  line-height: 65px;
+  height: 30px;
+  letter-spacing: 0.2em;
+  color: #D6D3D1;
+}
+
+/* Embed block styles */
+.cdx-block.embed-tool {
+  padding: 1rem 0;
+}
+
+.embed-tool__caption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #78716C;
+}
+
+/* Link tool styles */
+.cdx-block.link-tool {
+  padding: 1rem;
+  border: 1px solid #E7E5E4;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.link-tool__content {
+  display: block;
+  padding: 0.75rem;
+}
+
+.link-tool__title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1C1917;
+}
+
+.link-tool__description {
+  font-size: 0.875rem;
+  color: #78716C;
+  margin-bottom: 0.5rem;
+}
+
+.link-tool__anchor {
+  font-size: 0.75rem;
+  color: #D97706;
+  text-decoration: none;
+}
+
+/* General block styling */
+.ce-block {
+  padding: 0.5rem 0;
+}
+
+.ce-block--selected .ce-block__content {
+  background-color: #FEF3C7; /* amber-50 */
+}
+
+.ce-block--focused {
+  background-color: transparent;
+}
+
+/* Loading and empty states */
+.codex-editor--empty .ce-block:first-child [contenteditable="true"][data-placeholder]:empty::before,
+.codex-editor [contenteditable="true"][data-placeholder]:empty::before {
+  color: #A8A29E;
+}
+
+/* Tune buttons (settings) */
+.ce-settings__button--active {
+  color: #D97706 !important;
+}
+
+.ce-inline-tool--active {
+  color: #D97706 !important;
+}
+
+/* Ensure proper focus states */
+.ce-block__content:focus-within {
+  outline: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 650px) {
+  .ce-toolbar__actions {
+    right: -5px;
+  }
+
+  .ce-toolbar__plus {
+    left: -26px;
+  }
+}

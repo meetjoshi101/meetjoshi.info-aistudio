@@ -1,277 +1,172 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService, BlogPost } from '../../services/data.service';
 import { SupabaseService } from '../../services/supabase.service';
+import { EditorJSService } from '../../services/editorjs.service';
 import { from } from 'rxjs';
+import EditorJS from '@editorjs/editorjs';
 
 @Component({
   selector: 'app-blog-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="px-4 sm:px-0">
-      <div class="mb-6">
-        <h2 class="text-2xl font-serif text-stone-900">{{ isEditMode() ? 'Edit Blog Post' : 'New Blog Post' }}</h2>
-      </div>
-
-      @if (error()) {
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
-          {{ error() }}
-        </div>
-      }
-
-      <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="bg-white shadow rounded-lg p-6 space-y-6">
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <!-- Title -->
-          <div class="md:col-span-2">
-            <label for="title" class="block text-sm font-medium text-stone-700">Title *</label>
-            <input
-              id="title"
-              type="text"
-              formControlName="title"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="Blog post title"
-            />
-            @if (blogForm.get('title')?.invalid && blogForm.get('title')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Title is required</p>
-            }
+    <div class="min-h-screen bg-stone-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white shadow rounded-lg p-8">
+          <!-- Header -->
+          <div class="mb-8 pb-6 border-b border-stone-200">
+            <h1 class="text-3xl font-serif font-bold text-stone-900">
+              {{ isEditMode() ? 'Edit Blog Post' : 'New Blog Post' }}
+            </h1>
+            <p class="mt-2 text-sm text-stone-600">
+              Use the rich editor to create your content
+            </p>
           </div>
 
-          <!-- Slug -->
-          <div class="md:col-span-2">
-            <label for="slug" class="block text-sm font-medium text-stone-700">Slug * (URL identifier)</label>
-            <input
-              id="slug"
-              type="text"
-              formControlName="id"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="blog-post-slug"
-            />
-            @if (blogForm.get('id')?.invalid && blogForm.get('id')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Slug is required</p>
-            }
-          </div>
-
-          <!-- Category -->
-          <div>
-            <label for="category" class="block text-sm font-medium text-stone-700">Category *</label>
-            <input
-              id="category"
-              type="text"
-              formControlName="category"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="e.g., Development, Design, Tutorial"
-            />
-            @if (blogForm.get('category')?.invalid && blogForm.get('category')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Category is required</p>
-            }
-          </div>
-
-          <!-- Author -->
-          <div>
-            <label for="author" class="block text-sm font-medium text-stone-700">Author</label>
-            <input
-              id="author"
-              type="text"
-              formControlName="author"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="Meet Joshi"
-            />
-          </div>
-
-          <!-- Date -->
-          <div>
-            <label for="date" class="block text-sm font-medium text-stone-700">Date *</label>
-            <input
-              id="date"
-              type="date"
-              formControlName="date"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-            />
-            @if (blogForm.get('date')?.invalid && blogForm.get('date')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Date is required</p>
-            }
-          </div>
-
-          <!-- Read Time -->
-          <div>
-            <label for="readTime" class="block text-sm font-medium text-stone-700">Read Time *</label>
-            <input
-              id="readTime"
-              type="text"
-              formControlName="readTime"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="5 min read"
-            />
-            @if (blogForm.get('readTime')?.invalid && blogForm.get('readTime')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Read time is required</p>
-            }
-          </div>
-
-          <!-- Published -->
-          <div class="flex items-center">
-            <input
-              id="published"
-              type="checkbox"
-              formControlName="published"
-              class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-stone-300 rounded"
-            />
-            <label for="published" class="ml-2 block text-sm text-stone-900">
-              Published (visible to public)
-            </label>
-          </div>
-
-          <!-- Excerpt -->
-          <div class="md:col-span-2">
-            <label for="excerpt" class="block text-sm font-medium text-stone-700">Excerpt *</label>
-            <textarea
-              id="excerpt"
-              formControlName="excerpt"
-              rows="3"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
-              placeholder="Brief excerpt for the blog post"
-            ></textarea>
-            @if (blogForm.get('excerpt')?.invalid && blogForm.get('excerpt')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Excerpt is required</p>
-            }
-          </div>
-
-          <!-- Image Upload -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-stone-700">Featured Image *</label>
-            @if (currentImageUrl()) {
-              <div class="mt-2 mb-2">
-                <img [src]="currentImageUrl()" alt="Preview" class="h-40 w-auto rounded border border-stone-200">
-              </div>
-            }
-            <input
-              type="file"
-              (change)="onImageChange($event)"
-              accept="image/*"
-              class="mt-1 block w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
-            />
-            @if (uploadingImage()) {
-              <p class="mt-1 text-sm text-amber-600">Uploading image...</p>
-            }
-            @if (blogForm.get('imageUrl')?.invalid && blogForm.get('imageUrl')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Image is required</p>
-            }
-          </div>
-
-          <!-- Gallery Images -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-stone-700 mb-2">Gallery Images (Optional)</label>
-            <div class="space-y-2">
-              @for (url of galleryImages(); track $index; let i = $index) {
-                <div class="flex gap-2 items-center">
-                  <img [src]="url" alt="Gallery" class="h-10 w-10 object-cover rounded">
-                  <span class="flex-1 text-sm text-stone-600 truncate">{{ url }}</span>
-                  <button
-                    type="button"
-                    (click)="removeGalleryImage(i)"
-                    class="px-3 py-2 text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove
-                  </button>
-                </div>
-              }
+          @if (error()) {
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+              <p class="text-sm text-red-800">{{ error() }}</p>
             </div>
-            <input
-              type="file"
-              (change)="onGalleryImageChange($event)"
-              accept="image/*"
-              class="mt-2 block w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
-            />
-            @if (uploadingGalleryImage()) {
-              <p class="mt-1 text-sm text-amber-600">Uploading gallery image...</p>
-            }
-          </div>
+          }
 
-          <!-- Content (HTML) -->
-          <div class="md:col-span-2">
-            <label for="content" class="block text-sm font-medium text-stone-700">
-              Content (HTML) *
-            </label>
-            <textarea
-              id="content"
-              formControlName="content"
-              rows="12"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border font-mono text-xs"
-              placeholder="<h2>Section Title</h2><p>Content here...</p>"
-            ></textarea>
-            @if (blogForm.get('content')?.invalid && blogForm.get('content')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Content is required</p>
-            }
-          </div>
-        </div>
+          <form [formGroup]="blogForm" (ngSubmit)="onSubmit()">
+            <div class="space-y-6">
+              <!-- Slug (ID) -->
+              <div>
+                <label for="id" class="block text-sm font-medium text-stone-700">
+                  Slug (URL) *
+                </label>
+                <input
+                  type="text"
+                  id="id"
+                  formControlName="id"
+                  [readonly]="isEditMode()"
+                  class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
+                  placeholder="my-blog-post"
+                />
+                @if (blogForm.get('id')?.invalid && blogForm.get('id')?.touched) {
+                  <p class="mt-1 text-sm text-red-600">Slug is required</p>
+                }
+              </div>
 
-        <!-- Form Actions -->
-        <div class="flex justify-end space-x-3 pt-4 border-t border-stone-200">
-          <button
-            type="button"
-            (click)="onCancel()"
-            class="px-4 py-2 text-sm font-medium text-stone-700 bg-white border border-stone-300 rounded-md hover:bg-stone-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            [disabled]="blogForm.invalid || saving()"
-            class="px-4 py-2 text-sm font-medium text-white bg-amber-600 rounded-md hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {{ saving() ? 'Saving...' : (isEditMode() ? 'Update Post' : 'Create Post') }}
-          </button>
+              <!-- Title -->
+              <div>
+                <label for="title" class="block text-sm font-medium text-stone-700">
+                  Title *
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  formControlName="title"
+                  class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border"
+                  placeholder="My Amazing Blog Post"
+                />
+                @if (blogForm.get('title')?.invalid && blogForm.get('title')?.touched) {
+                  <p class="mt-1 text-sm text-red-600">Title is required</p>
+                }
+              </div>
+
+              <!-- Published -->
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="published"
+                  formControlName="published"
+                  class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-stone-300 rounded"
+                />
+                <label for="published" class="ml-2 block text-sm text-stone-700">
+                  Published (visible to public)
+                </label>
+              </div>
+
+              <!-- Rich Content Editor -->
+              <div>
+                <label class="block text-sm font-medium text-stone-700 mb-2">
+                  Content *
+                </label>
+
+                <div class="relative">
+                  <!-- Editor Container (always present) -->
+                  <div
+                    id="editorjs-blog-content"
+                    class="border border-stone-300 rounded-md bg-white min-h-[400px]"
+                  ></div>
+
+                  <!-- Loading Overlay -->
+                  @if (!editorInitialized()) {
+                    <div class="absolute inset-0 bg-stone-50/90 flex items-center justify-center rounded-md">
+                      <p class="text-amber-600 font-medium">Loading editor...</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-6 mt-8 border-t border-stone-200">
+              <button
+                type="button"
+                (click)="onCancel()"
+                class="px-4 py-2 border border-stone-300 rounded-md text-sm font-medium text-stone-700 hover:bg-stone-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                [disabled]="saving() || !blogForm.valid"
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ saving() ? 'Saving...' : (isEditMode() ? 'Update' : 'Create') }} Post
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   `,
   styles: []
 })
-export class BlogFormComponent implements OnInit {
+export class BlogFormComponent implements OnInit, OnDestroy {
   blogForm: FormGroup;
   isEditMode = signal(false);
   saving = signal(false);
-  uploadingImage = signal(false);
-  uploadingGalleryImage = signal(false);
   error = signal('');
-  currentImageUrl = signal('');
-  galleryImages = signal<string[]>([]);
   postId: string | null = null;
+
+  // EditorJS properties
+  private editor: EditorJS | null = null;
+  editorInitialized = signal(false);
 
   constructor(
     private fb: FormBuilder,
     private dataService: DataService,
     private supabaseService: SupabaseService,
+    private editorJSService: EditorJSService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.blogForm = this.fb.group({
       id: ['', Validators.required],
       title: ['', Validators.required],
-      excerpt: ['', Validators.required],
-      content: ['', Validators.required],
-      date: ['', Validators.required],
-      category: ['', Validators.required],
-      readTime: ['', Validators.required],
-      imageUrl: ['', Validators.required],
-      author: ['Meet Joshi'],
+      content: [null],
       published: [false]
     });
   }
 
   ngOnInit() {
-    this.postId = this.route.snapshot.paramMap.get('id');
-
-    if (this.postId) {
-      this.isEditMode.set(true);
-      this.loadBlogPost(this.postId);
-    } else {
-      // Set default date to today
-      const today = new Date().toISOString().split('T')[0];
-      this.blogForm.patchValue({ date: today });
-    }
+    this.route.params.subscribe(params => {
+      this.postId = params['id'];
+      if (this.postId) {
+        this.isEditMode.set(true);
+        this.loadBlogPost(this.postId);
+      } else {
+        // For new posts, initialize editor immediately
+        setTimeout(() => this.initializeEditor(), 100);
+      }
+    });
   }
 
   private loadBlogPost(id: string) {
@@ -279,24 +174,15 @@ export class BlogFormComponent implements OnInit {
       next: (posts) => {
         const post = posts.find(p => p.id === id);
         if (post) {
-          this.currentImageUrl.set(post.imageUrl);
-          this.galleryImages.set(post.galleryImages || []);
-
-          // Convert date format (assuming it's stored as formatted string)
-          const dateValue = post.date;
-
           this.blogForm.patchValue({
             id: post.id,
             title: post.title,
-            excerpt: post.excerpt,
-            content: post.content || '',
-            date: dateValue,
-            category: post.category,
-            readTime: post.readTime,
-            imageUrl: post.imageUrl,
-            author: post.author || 'Meet Joshi',
+            content: post.content,
             published: post.published || false
           });
+
+          // Initialize editor AFTER data is loaded
+          setTimeout(() => this.initializeEditor(), 100);
         } else {
           this.error.set('Blog post not found');
         }
@@ -308,94 +194,132 @@ export class BlogFormComponent implements OnInit {
     });
   }
 
-  async onImageChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    this.uploadingImage.set(true);
-
+  private async initializeEditor() {
     try {
-      // Generate unique filename
-      const timestamp = Date.now();
-      const filename = `${timestamp}-${file.name}`;
-      const imageUrl = await this.supabaseService.uploadImage('blog-images', file, filename);
-      this.blogForm.patchValue({ imageUrl });
-      this.currentImageUrl.set(imageUrl);
-      this.uploadingImage.set(false);
+      // Set the bucket for blog images
+      this.editorJSService.setImageBucket('blog-images');
+
+      const initialData = this.blogForm.get('content')?.value;
+
+      const config = this.editorJSService.createEditorConfig(
+        'editorjs-blog-content',
+        initialData || undefined,
+        'Start writing your blog post...'
+      );
+
+      this.editor = await this.editorJSService.initializeEditor(config);
+      this.editorInitialized.set(true);
     } catch (error) {
-      this.error.set('Failed to upload image');
-      this.uploadingImage.set(false);
-      console.error('Upload error:', error);
+      console.error('Failed to initialize editor:', error);
+      this.error.set('Failed to initialize editor');
     }
   }
 
-  async onGalleryImageChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    this.uploadingGalleryImage.set(true);
-
-    try {
-      // Generate unique filename
-      const timestamp = Date.now();
-      const filename = `${timestamp}-${file.name}`;
-      const imageUrl = await this.supabaseService.uploadImage('blog-images', file, filename);
-      this.galleryImages.update(images => [...images, imageUrl]);
-      this.uploadingGalleryImage.set(false);
-      // Clear the file input
-      input.value = '';
-    } catch (error) {
-      this.error.set('Failed to upload gallery image');
-      this.uploadingGalleryImage.set(false);
-      console.error('Upload error:', error);
-    }
-  }
-
-  removeGalleryImage(index: number) {
-    this.galleryImages.update(images => images.filter((_, i) => i !== index));
-  }
-
-  onSubmit() {
-    if (this.blogForm.valid) {
+  async onSubmit() {
+    if (this.blogForm.valid && this.editor) {
       this.saving.set(true);
       this.error.set('');
 
-      const formValue = this.blogForm.value;
-      const slug = formValue.id;
-      const postData = {
-        title: formValue.title,
-        excerpt: formValue.excerpt,
-        content: formValue.content,
-        date: formValue.date,
-        category: formValue.category,
-        readTime: formValue.readTime,
-        imageUrl: formValue.imageUrl,
-        author: formValue.author,
-        galleryImages: this.galleryImages(),
-        published: formValue.published
-      };
+      try {
+        // Save editor data
+        const editorData = await this.editorJSService.saveEditorData(this.editor);
 
-      const operation = this.isEditMode()
-        ? from(this.dataService.updateBlogPost(slug, postData))
-        : from(this.dataService.createBlogPost(slug, postData));
+        // Update form with editor content
+        this.blogForm.patchValue({
+          content: editorData.blocks.length > 0 ? editorData : null
+        });
 
-      operation.subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigate(['/admin/blog']);
-        },
-        error: (err) => {
-          this.saving.set(false);
-          this.error.set(`Failed to ${this.isEditMode() ? 'update' : 'create'} blog post`);
-          console.error('Save error:', err);
+        const formValue = this.blogForm.value;
+        const slug = formValue.id;
+
+        // Generate automatic values
+        const now = new Date().toISOString();
+
+        const postData = {
+          title: formValue.title,
+          excerpt: this.generateExcerpt(editorData),
+          content: formValue.content,
+          date: now,
+          category: 'Blog',
+          readTime: this.calculateReadTime(editorData),
+          imageUrl: this.extractFirstImage(editorData) || 'https://picsum.photos/800/400',
+          author: 'Meet Joshi',
+          galleryImages: [],
+          published: formValue.published
+        };
+
+        const operation = this.isEditMode()
+          ? from(this.dataService.updateBlogPost(slug, postData))
+          : from(this.dataService.createBlogPost(slug, postData));
+
+        operation.subscribe({
+          next: () => {
+            this.saving.set(false);
+            this.router.navigate(['/admin/blog']);
+          },
+          error: (err) => {
+            this.saving.set(false);
+            this.error.set(`Failed to ${this.isEditMode() ? 'update' : 'create'} blog post`);
+            console.error('Save error:', err);
+          }
+        });
+      } catch (error) {
+        this.saving.set(false);
+        this.error.set('Failed to save editor content');
+        console.error('Editor save error:', error);
+      }
+    }
+  }
+
+  private generateExcerpt(editorData: any): string {
+    // Extract text from first paragraph or header
+    if (editorData.blocks && editorData.blocks.length > 0) {
+      for (const block of editorData.blocks) {
+        if (block.type === 'paragraph' || block.type === 'header') {
+          const text = block.data.text || '';
+          // Strip HTML tags and truncate
+          const plainText = text.replace(/<[^>]*>/g, '');
+          return plainText.substring(0, 160) + (plainText.length > 160 ? '...' : '');
+        }
+      }
+    }
+    return 'Read more...';
+  }
+
+  private calculateReadTime(editorData: any): string {
+    // Estimate reading time based on word count
+    let wordCount = 0;
+    if (editorData.blocks) {
+      editorData.blocks.forEach((block: any) => {
+        if (block.type === 'paragraph' || block.type === 'header' || block.type === 'quote') {
+          const text = (block.data.text || '').replace(/<[^>]*>/g, '');
+          wordCount += text.split(/\s+/).length;
         }
       });
     }
+    const minutes = Math.max(1, Math.ceil(wordCount / 200)); // Average reading speed
+    return `${minutes} min read`;
+  }
+
+  private extractFirstImage(editorData: any): string | null {
+    // Extract the first image URL from content
+    if (editorData.blocks) {
+      for (const block of editorData.blocks) {
+        if (block.type === 'image' && block.data.file?.url) {
+          return block.data.file.url;
+        }
+      }
+    }
+    return null;
   }
 
   onCancel() {
     this.router.navigate(['/admin/blog']);
+  }
+
+  ngOnDestroy() {
+    if (this.editor) {
+      this.editorJSService.destroyEditor(this.editor);
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, from, map, catchError, of } from 'rxjs';
 import { SupabaseService } from './supabase.service';
+import { EditorJSData } from '../types/editorjs.types';
 
 export interface Project {
   id: string;
@@ -14,7 +15,7 @@ export interface Project {
   challenge?: string;
   solution?: string;
   outcome?: string;
-  content?: string;
+  content?: EditorJSData | null;
   published?: boolean;
 }
 
@@ -22,7 +23,7 @@ export interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
-  content?: string;
+  content?: EditorJSData | null;
   date: string;
   category: string;
   readTime: string;
@@ -327,6 +328,20 @@ export class DataService {
   // --- Mappers (convert database schema to app interfaces) ---
 
   private mapProjectFromDb(data: any): Project {
+    // Ensure content is valid EditorJS data or null
+    let content: EditorJSData | null = null;
+    if (data.content) {
+      // Validate it has the required structure
+      if (typeof data.content === 'object' &&
+          data.content.blocks &&
+          Array.isArray(data.content.blocks)) {
+        content = data.content as EditorJSData;
+      } else {
+        // Content is malformed, log warning
+        console.warn('Invalid content structure for project:', data.slug);
+      }
+    }
+
     return {
       id: data.slug,
       slug: data.slug,
@@ -340,7 +355,7 @@ export class DataService {
       challenge: data.challenge,
       solution: data.solution,
       outcome: data.outcome,
-      content: data.content,
+      content: content,
       published: data.published
     } as Project;
   }
@@ -356,12 +371,49 @@ export class DataService {
       });
     }
 
+    // Ensure excerpt is always a string
+    let excerpt = data.excerpt;
+    if (typeof excerpt !== 'string') {
+      // Generate from content blocks if excerpt is corrupted
+      if (data.content && data.content.blocks && Array.isArray(data.content.blocks)) {
+        for (const block of data.content.blocks) {
+          if (block.type === 'paragraph' || block.type === 'header') {
+            const text = block.data?.text || '';
+            // Strip HTML tags and truncate
+            const plainText = text.replace(/<[^>]*>/g, '');
+            if (plainText.length > 0) {
+              excerpt = plainText.substring(0, 160) + (plainText.length > 160 ? '...' : '');
+              break;
+            }
+          }
+        }
+      }
+      // Final fallback
+      if (typeof excerpt !== 'string' || excerpt.length === 0) {
+        excerpt = 'Read more...';
+      }
+    }
+
+    // Ensure content is valid EditorJS data or null
+    let content: EditorJSData | null = null;
+    if (data.content) {
+      // Validate it has the required structure
+      if (typeof data.content === 'object' &&
+          data.content.blocks &&
+          Array.isArray(data.content.blocks)) {
+        content = data.content as EditorJSData;
+      } else {
+        // Content is malformed, log warning
+        console.warn('Invalid content structure for blog post:', data.slug);
+      }
+    }
+
     return {
       id: data.slug,
       slug: data.slug,
       title: data.title,
-      excerpt: data.excerpt,
-      content: data.content,
+      excerpt: excerpt,
+      content: content,
       date: formattedDate,
       category: data.category,
       readTime: data.read_time || '5 min read',
