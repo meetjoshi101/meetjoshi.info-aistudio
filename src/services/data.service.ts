@@ -142,6 +142,50 @@ export class DataService {
     );
   }
 
+  // --- Admin Methods (for viewing all content including unpublished) ---
+
+  getAllProjects(): Observable<Project[]> {
+    return from(
+      this.supabase.client
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) {
+          console.error('Error fetching all projects:', error);
+          return [];
+        }
+        return (data || []).map(this.mapProjectFromDb);
+      }),
+      catchError(err => {
+        console.error('Projects API Error', err);
+        return of([]);
+      })
+    );
+  }
+
+  getAllBlogPosts(): Observable<BlogPost[]> {
+    return from(
+      this.supabase.client
+        .from('blog_posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) {
+          console.error('Error fetching all blog posts:', error);
+          return [];
+        }
+        return (data || []).map(this.mapBlogPostFromDb);
+      }),
+      catchError(error => {
+        console.error('Error fetching from Supabase:', error);
+        return of([]);
+      })
+    );
+  }
+
   // --- Admin Methods (for creating content) ---
 
   async createProject(slug: string, project: Omit<Project, 'id' | 'slug'>): Promise<Project | null> {
