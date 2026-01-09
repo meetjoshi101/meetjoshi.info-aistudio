@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, from, map, catchError, of } from 'rxjs';
 import { SupabaseService } from './supabase.service';
+import { EditorJSData } from '../types/editorjs.types';
 
 export interface Project {
   id: string;
@@ -14,7 +15,7 @@ export interface Project {
   challenge?: string;
   solution?: string;
   outcome?: string;
-  content?: string;
+  content?: EditorJSData | null;
   published?: boolean;
 }
 
@@ -22,7 +23,7 @@ export interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
-  content?: string;
+  content?: EditorJSData | null;
   date: string;
   category: string;
   readTime: string;
@@ -340,7 +341,7 @@ export class DataService {
       challenge: data.challenge,
       solution: data.solution,
       outcome: data.outcome,
-      content: data.content,
+      content: data.content as EditorJSData | null,
       published: data.published
     } as Project;
   }
@@ -361,7 +362,7 @@ export class DataService {
       slug: data.slug,
       title: data.title,
       excerpt: data.excerpt,
-      content: data.content,
+      content: data.content as EditorJSData | null,
       date: formattedDate,
       category: data.category,
       readTime: data.read_time || '5 min read',

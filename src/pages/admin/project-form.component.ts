@@ -1,10 +1,12 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService, Project } from '../../services/data.service';
 import { SupabaseService } from '../../services/supabase.service';
+import { EditorJSService } from '../../services/editorjs.service';
 import { from } from 'rxjs';
+import EditorJS from '@editorjs/editorjs';
 
 @Component({
   selector: 'app-project-form',
@@ -214,19 +216,22 @@ import { from } from 'rxjs';
             ></textarea>
           </div>
 
-          <!-- Content (HTML) -->
+          <!-- Content (EditorJS) -->
           <div class="md:col-span-2">
-            <label for="content" class="block text-sm font-medium text-stone-700">
-              Content (HTML)
+            <label class="block text-sm font-medium text-stone-700 mb-2">
+              Content (Rich Editor)
               <span class="text-stone-500 font-normal">- Optional detailed content</span>
             </label>
-            <textarea
-              id="content"
-              formControlName="content"
-              rows="6"
-              class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm px-3 py-2 border font-mono text-xs"
-              placeholder="<h2>Project Details</h2><p>Content here...</p>"
-            ></textarea>
+
+            <!-- EditorJS Container -->
+            <div
+              id="editorjs-project-content"
+              class="border border-stone-300 rounded-md bg-white min-h-[300px] p-4 prose prose-stone max-w-none"
+            ></div>
+
+            @if (!editorInitialized()) {
+              <p class="mt-2 text-sm text-amber-600">Loading editor...</p>
+            }
           </div>
         </div>
 
@@ -252,7 +257,7 @@ import { from } from 'rxjs';
   `,
   styles: []
 })
-export class ProjectFormComponent implements OnInit {
+export class ProjectFormComponent implements OnInit, AfterViewInit, OnDestroy {
   projectForm: FormGroup;
   isEditMode = signal(false);
   saving = signal(false);
@@ -261,10 +266,15 @@ export class ProjectFormComponent implements OnInit {
   currentImageUrl = signal('');
   projectId: string | null = null;
 
+  // EditorJS properties
+  private editor: EditorJS | null = null;
+  editorInitialized = signal(false);
+
   constructor(
     private fb: FormBuilder,
     private dataService: DataService,
     private supabaseService: SupabaseService,
+    private editorJSService: EditorJSService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -377,47 +387,95 @@ export class ProjectFormComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (this.projectForm.valid) {
+  async onSubmit() {
+    if (this.projectForm.valid && this.editor) {
       this.saving.set(true);
       this.error.set('');
 
-      const formValue = this.projectForm.value;
-      const slug = formValue.id;
-      const projectData = {
-        title: formValue.title,
-        client: formValue.client,
-        year: formValue.year,
-        description: formValue.description,
-        category: formValue.category,
-        technologies: formValue.technologies.filter((t: string) => t.trim() !== ''),
-        imageUrl: formValue.imageUrl,
-        challenge: formValue.challenge,
-        solution: formValue.solution,
-        outcome: formValue.outcome,
-        content: formValue.content,
-        published: formValue.published
-      };
+      try {
+        // Save editor data
+        const editorData = await this.editorJSService.saveEditorData(this.editor);
 
-      const operation = this.isEditMode()
-        ? from(this.dataService.updateProject(slug, projectData))
-        : from(this.dataService.createProject(slug, projectData));
+        // Update form with editor content
+        this.projectForm.patchValue({
+          content: editorData.blocks.length > 0 ? editorData : null
+        });
 
-      operation.subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigate(['/admin/projects']);
-        },
-        error: (err) => {
-          this.saving.set(false);
-          this.error.set(`Failed to ${this.isEditMode() ? 'update' : 'create'} project`);
-          console.error('Save error:', err);
-        }
-      });
+        const formValue = this.projectForm.value;
+        const slug = formValue.id;
+        const projectData = {
+          title: formValue.title,
+          client: formValue.client,
+          year: formValue.year,
+          description: formValue.description,
+          category: formValue.category,
+          technologies: formValue.technologies.filter((t: string) => t.trim() !== ''),
+          imageUrl: formValue.imageUrl,
+          challenge: formValue.challenge,
+          solution: formValue.solution,
+          outcome: formValue.outcome,
+          content: formValue.content,
+          published: formValue.published
+        };
+
+        const operation = this.isEditMode()
+          ? from(this.dataService.updateProject(slug, projectData))
+          : from(this.dataService.createProject(slug, projectData));
+
+        operation.subscribe({
+          next: () => {
+            this.saving.set(false);
+            this.router.navigate(['/admin/projects']);
+          },
+          error: (err) => {
+            this.saving.set(false);
+            this.error.set(`Failed to ${this.isEditMode() ? 'update' : 'create'} project`);
+            console.error('Save error:', err);
+          }
+        });
+      } catch (error) {
+        this.saving.set(false);
+        this.error.set('Failed to save editor content');
+        console.error('Editor save error:', error);
+      }
     }
   }
 
   onCancel() {
     this.router.navigate(['/admin/projects']);
+  }
+
+  ngAfterViewInit() {
+    // Initialize EditorJS after view is ready
+    setTimeout(() => {
+      this.initializeEditor();
+    }, 100);
+  }
+
+  private async initializeEditor() {
+    try {
+      // Set the bucket for project images
+      this.editorJSService.setImageBucket('project-images');
+
+      const initialData = this.projectForm.get('content')?.value;
+
+      const config = this.editorJSService.createEditorConfig(
+        'editorjs-project-content',
+        initialData || undefined,
+        'Write detailed project content... (Optional)'
+      );
+
+      this.editor = await this.editorJSService.initializeEditor(config);
+      this.editorInitialized.set(true);
+    } catch (error) {
+      console.error('Failed to initialize editor:', error);
+      this.error.set('Failed to initialize editor');
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.editor) {
+      this.editorJSService.destroyEditor(this.editor);
+    }
   }
 }

@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit, ViewEncapsulation } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DataService, BlogPost } from '../services/data.service';
 import { NgOptimizedImage, Location } from '@angular/common';
-import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { BlockRendererComponent } from '../components/block-renderer.component';
 
 @Component({
   selector: 'app-blog-details',
@@ -45,15 +45,9 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
         <!-- Content Body -->
         <div class="px-6 max-w-3xl mx-auto">
-           <!-- Hashnode content returns raw HTML which often needs specific styling classes -->
-           <!-- Added SafeHtml pipe and prose classes from Tailwind Typography -->
-           <div class="prose prose-stone prose-lg md:prose-xl 
-                       prose-headings:font-serif prose-headings:font-bold 
-                       prose-p:text-stone-600 prose-p:leading-loose 
-                       prose-a:text-gold-600 hover:prose-a:text-gold-500 
-                       prose-img:rounded-xl prose-img:shadow-lg
-                       first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-5px] first-letter:text-gold-500" 
-                [innerHTML]="p.content | safeHtml">
+           <!-- Render EditorJS content blocks -->
+           <div class="first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-5px] first-letter:text-gold-500">
+             <app-block-renderer [data]="p.content"></app-block-renderer>
            </div>
 
            <!-- Gallery Grid for Multiple Images -->
@@ -106,7 +100,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
       </div>
     }
   `,
-  imports: [NgOptimizedImage, RouterLink, SafeHtmlPipe]
+  imports: [NgOptimizedImage, RouterLink, BlockRendererComponent]
 })
 export class BlogDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);

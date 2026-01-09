@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit, ViewEncapsulation } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DataService, Project } from '../services/data.service';
 import { NgOptimizedImage, Location } from '@angular/common';
-import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { BlockRendererComponent } from '../components/block-renderer.component';
 
 @Component({
   selector: 'app-project-details',
@@ -117,19 +117,13 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
             </div>
 
           } @else if (p.content) {
-            <!-- Case 2: HTML Content from Hashnode -->
+            <!-- Case 2: EditorJS Block Content -->
              <div class="grid md:grid-cols-12 gap-12">
                 <div class="md:col-span-4">
                   <h2 class="text-2xl font-serif font-bold text-stone-900 sticky top-32">Case Study</h2>
                 </div>
                 <div class="md:col-span-8">
-                   <div class="prose prose-stone prose-lg 
-                       prose-headings:font-serif prose-headings:font-bold 
-                       prose-p:text-stone-600 prose-p:leading-loose 
-                       prose-a:text-gold-600 hover:prose-a:text-gold-500 
-                       prose-img:rounded-xl prose-img:shadow-lg" 
-                        [innerHTML]="p.content | safeHtml">
-                   </div>
+                   <app-block-renderer [data]="p.content"></app-block-renderer>
                 </div>
              </div>
           }
@@ -152,7 +146,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
       </div>
     }
   `,
-  imports: [NgOptimizedImage, RouterLink, SafeHtmlPipe]
+  imports: [NgOptimizedImage, RouterLink, BlockRendererComponent]
 })
 export class ProjectDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
