@@ -64,7 +64,7 @@ import { AuthService } from '../../services/auth.service';
   styles: []
 })
 export class AdminLayoutComponent {
-  user = this.authService.getUser;
+  user = this.authService.getUser();
 
   constructor(
     private authService: AuthService,
