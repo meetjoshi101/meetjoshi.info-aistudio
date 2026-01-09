@@ -17,7 +17,7 @@ import { EditorJSData } from '../types/editorjs.types';
                 prose-code:bg-stone-100 prose-code:text-stone-800
                 prose-pre:bg-stone-900 prose-pre:text-stone-100
                 max-w-none">
-      @if (content()) {
+      @if (content() && content()!.blocks && content()!.blocks.length > 0) {
         @for (block of content()!.blocks; track block.id || $index) {
           @switch (block.type) {
             @case ('header') {
@@ -56,7 +56,7 @@ import { EditorJSData } from '../types/editorjs.types';
           }
         }
       } @else {
-        <p class="text-stone-400 italic">No content available</p>
+        <p class="text-stone-400 italic text-center py-8">No content available yet. Edit this post to add content.</p>
       }
     </div>
   `,
@@ -140,13 +140,13 @@ export class BlockRendererComponent {
   }
 
   renderHeader(block: any): SafeHtml {
-    const level = block.data.level || 2;
-    const text = block.data.text || '';
+    const level = block.data?.level || 2;
+    const text = block.data?.text || '';
     return this.sanitize(`<h${level}>${text}</h${level}>`);
   }
 
   renderParagraph(block: any): SafeHtml {
-    const text = block.data.text || '';
+    const text = block.data?.text || '';
     return this.sanitize(`<p>${text}</p>`);
   }
 
@@ -154,7 +154,13 @@ export class BlockRendererComponent {
     const style = block.data.style || 'unordered';
     const items = block.data.items || [];
     const tag = style === 'ordered' ? 'ol' : 'ul';
-    const listItems = items.map((item: string) => `<li>${item}</li>`).join('');
+
+    const listItems = items.map((item: any) => {
+      // EditorJS list items can be strings or objects with a content property
+      const text = typeof item === 'string' ? item : (item.content || item.text || '');
+      return `<li>${text}</li>`;
+    }).join('');
+
     return this.sanitize(`<${tag}>${listItems}</${tag}>`);
   }
 

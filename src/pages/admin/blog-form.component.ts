@@ -88,16 +88,20 @@ import EditorJS from '@editorjs/editorjs';
                   Content *
                 </label>
 
-                @if (!editorInitialized()) {
-                  <div class="border border-stone-300 rounded-md bg-stone-50 min-h-[400px] p-4 flex items-center justify-center">
-                    <p class="text-amber-600">Loading editor...</p>
-                  </div>
-                } @else {
+                <div class="relative">
+                  <!-- Editor Container (always present) -->
                   <div
                     id="editorjs-blog-content"
                     class="border border-stone-300 rounded-md bg-white min-h-[400px]"
                   ></div>
-                }
+
+                  <!-- Loading Overlay -->
+                  @if (!editorInitialized()) {
+                    <div class="absolute inset-0 bg-stone-50/90 flex items-center justify-center rounded-md">
+                      <p class="text-amber-600 font-medium">Loading editor...</p>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
 
