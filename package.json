@@ -1,48 +1,26 @@
 {
-  "name": "meet-joshi---portfolio",
+  "name": "meetjoshi-portfolio-monorepo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "ng serve",
-    "build": "ng build",
-    "build:prod": "ng build --configuration=production",
-    "preview": "ng serve --configuration=production",
-    "docker:build": "docker build -t meetjoshi-portfolio:latest .",
-    "docker:run": "docker run -p 8080:8080 meetjoshi-portfolio:latest",
-    "docker:build-run": "npm run docker:build && npm run docker:run",
-    "gcp:build": "gcloud builds submit --tag gcr.io/PROJECT_ID/meetjoshi-portfolio",
-    "gcp:deploy": "gcloud run deploy meetjoshi-portfolio --image gcr.io/PROJECT_ID/meetjoshi-portfolio --platform managed --region us-central1 --allow-unauthenticated"
-  },
-  "dependencies": {
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/common": "^21.0.0",
-    "@angular/compiler": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/forms": "^21.0.6",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/router": "^21.0.6",
-    "@editorjs/code": "^2.9.4",
-    "@editorjs/delimiter": "^1.4.2",
-    "@editorjs/editorjs": "^2.31.1",
-    "@editorjs/embed": "^2.8.0",
-    "@editorjs/header": "^2.8.8",
-    "@editorjs/image": "^2.10.3",
-    "@editorjs/inline-code": "^1.5.2",
-    "@editorjs/link": "^2.6.2",
-    "@editorjs/list": "^2.0.9",
-    "@editorjs/paragraph": "^2.11.7",
-    "@editorjs/quote": "^2.7.6",
-    "@editorjs/table": "^2.4.5",
-    "@supabase/supabase-js": "^2.89.0",
-    "rxjs": "^7.8.2",
-    "tailwindcss": "latest"
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "dev:backend": "npm run dev --workspace=packages/backend",
+    "build": "npm run build --workspaces --if-present",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "build:backend": "npm run build --workspace=packages/backend",
+    "build:shared": "npm run build --workspace=packages/shared",
+    "test": "npm run test --workspaces --if-present",
+    "docker:build-frontend": "docker build -f packages/frontend/Dockerfile -t meetjoshi-frontend:latest .",
+    "docker:build-backend": "docker build -f packages/backend/Dockerfile -t meetjoshi-backend:latest .",
+    "docker:build-all": "npm run docker:build-frontend && npm run docker:build-backend"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "typescript": "~5.9.3",
-    "vite": "^6.2.0"
+    "concurrently": "^9.1.0",
+    "typescript": "~5.9.3"
   }
 }

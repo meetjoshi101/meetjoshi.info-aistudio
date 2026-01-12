@@ -20,18 +20,18 @@ import Embed from '@editorjs/embed';
 import LinkTool from '@editorjs/link';
 // @ts-ignore
 import InlineCode from '@editorjs/inline-code';
-import { SupabaseService } from './supabase.service';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EditorJSService {
-  private supabaseService = inject(SupabaseService);
+  private storageService = inject(StorageService);
   private currentBucket = 'blog-images'; // Default bucket
 
   /**
    * Set the current storage bucket for image uploads
-   * @param bucket - The Supabase storage bucket name
+   * @param bucket - The storage bucket name
    */
   setImageBucket(bucket: 'project-images' | 'blog-images'): void {
     this.currentBucket = bucket;
@@ -85,14 +85,14 @@ export class EditorJSService {
           }
         },
 
-        // Image tool with Supabase upload
+        // Image tool with backend upload
         image: {
           // @ts-ignore
           class: Image,
           config: {
             uploader: {
               uploadByFile: async (file: File) => {
-                return this.uploadImageToSupabase(file);
+                return this.uploadImageViaBackend(file);
               }
             },
             captionPlaceholder: 'Enter caption (optional)',
@@ -186,22 +186,17 @@ export class EditorJSService {
   }
 
   /**
-   * Upload image to Supabase storage
+   * Upload image via backend API
    * @param file - Image file to upload
    * @returns Promise with success/failure and URL
    */
-  private async uploadImageToSupabase(file: File): Promise<{
+  private async uploadImageViaBackend(file: File): Promise<{
     success: 0 | 1;
     file?: { url: string };
     error?: string;
   }> {
     try {
-      // Generate unique filename
-      const timestamp = Date.now();
-      const filename = `${timestamp}-${file.name}`;
-
-      // Upload to Supabase using the current bucket
-      const imageUrl = await this.supabaseService.uploadImage(this.currentBucket, file, filename);
+      const imageUrl = await this.storageService.uploadImage(this.currentBucket, file);
 
       return {
         success: 1,
