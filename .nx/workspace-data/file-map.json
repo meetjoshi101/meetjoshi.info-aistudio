@@ -204,6 +204,43 @@
           "hash": "8944779941675350438"
         }
       ],
+      "shared": [
+        {
+          "file": "libs/shared/package.json",
+          "hash": "3864241186405918056",
+          "deps": [
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "libs/shared/project.json",
+          "hash": "16349281970273116457"
+        },
+        {
+          "file": "libs/shared/src/index.ts",
+          "hash": "5832306731458195077"
+        },
+        {
+          "file": "libs/shared/src/types/auth.types.ts",
+          "hash": "17523489399411353545"
+        },
+        {
+          "file": "libs/shared/src/types/blog.types.ts",
+          "hash": "10323144644467046037"
+        },
+        {
+          "file": "libs/shared/src/types/editorjs.types.ts",
+          "hash": "2466421505508921082"
+        },
+        {
+          "file": "libs/shared/src/types/project.types.ts",
+          "hash": "14701300988812891097"
+        },
+        {
+          "file": "libs/shared/tsconfig.json",
+          "hash": "4111375186474087915"
+        }
+      ],
       "backend": [
         {
           "file": "apps/backend/.env.example",
@@ -307,46 +344,13 @@
           "file": "apps/backend/tsconfig.json",
           "hash": "7166420062210823805"
         }
-      ],
-      "shared": [
-        {
-          "file": "libs/shared/package.json",
-          "hash": "3864241186405918056",
-          "deps": [
-            "npm:typescript"
-          ]
-        },
-        {
-          "file": "libs/shared/project.json",
-          "hash": "16349281970273116457"
-        },
-        {
-          "file": "libs/shared/src/index.ts",
-          "hash": "5832306731458195077"
-        },
-        {
-          "file": "libs/shared/src/types/auth.types.ts",
-          "hash": "17523489399411353545"
-        },
-        {
-          "file": "libs/shared/src/types/blog.types.ts",
-          "hash": "10323144644467046037"
-        },
-        {
-          "file": "libs/shared/src/types/editorjs.types.ts",
-          "hash": "2466421505508921082"
-        },
-        {
-          "file": "libs/shared/src/types/project.types.ts",
-          "hash": "14701300988812891097"
-        },
-        {
-          "file": "libs/shared/tsconfig.json",
-          "hash": "4111375186474087915"
-        }
       ]
     },
     "nonProjectFiles": [
+      {
+        "file": ".claude/agents/code-structure-reviewer.md",
+        "hash": "11965630984828032583"
+      },
       {
         "file": ".dockerignore",
         "hash": "14471426432860110644"
@@ -377,7 +381,7 @@
       },
       {
         "file": ".gitignore",
-        "hash": "5437361827709037319"
+        "hash": "4211642515454919335"
       },
       {
         "file": ".nxignore",
@@ -445,7 +449,7 @@
       },
       {
         "file": "static/environment.js",
-        "hash": "16071938935376355120"
+        "hash": "669634332184325511"
       },
       {
         "file": "static/favicon.ico",
