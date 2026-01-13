@@ -25,108 +25,41 @@
   },
   "fileMap": {
     "projectFileMap": {
-      "backend": [
+      "shared": [
         {
-          "file": "apps/backend/.env.example",
-          "hash": "17007422570839445657"
-        },
-        {
-          "file": "apps/backend/Dockerfile",
-          "hash": "2599039302476741704"
-        },
-        {
-          "file": "apps/backend/package.json",
-          "hash": "8927249437863042956",
+          "file": "libs/shared/package.json",
+          "hash": "3864241186405918056",
           "deps": [
-            "npm:@types/express",
-            "npm:@types/cors",
-            "npm:@types/multer",
-            "npm:@types/morgan",
-            "npm:@types/node",
-            "npm:tsx",
-            "npm:typescript",
-            "shared",
-            "npm:@supabase/supabase-js",
-            "npm:express@4.22.1",
-            "npm:cors",
-            "npm:dotenv",
-            "npm:helmet",
-            "npm:express-validator",
-            "npm:multer",
-            "npm:morgan"
+            "npm:typescript"
           ]
         },
         {
-          "file": "apps/backend/project.json",
-          "hash": "7162410230183308255"
+          "file": "libs/shared/project.json",
+          "hash": "16349281970273116457"
         },
         {
-          "file": "apps/backend/src/config/cors.ts",
-          "hash": "13110785573696790192"
+          "file": "libs/shared/src/index.ts",
+          "hash": "5832306731458195077"
         },
         {
-          "file": "apps/backend/src/config/environment.ts",
-          "hash": "7956914114169621798"
+          "file": "libs/shared/src/types/auth.types.ts",
+          "hash": "17523489399411353545"
         },
         {
-          "file": "apps/backend/src/config/supabase.ts",
-          "hash": "16863098746693723224"
+          "file": "libs/shared/src/types/blog.types.ts",
+          "hash": "10323144644467046037"
         },
         {
-          "file": "apps/backend/src/controllers/auth.controller.ts",
-          "hash": "17872322945796102554"
+          "file": "libs/shared/src/types/editorjs.types.ts",
+          "hash": "2466421505508921082"
         },
         {
-          "file": "apps/backend/src/controllers/blog.controller.ts",
-          "hash": "9063790140827223795"
+          "file": "libs/shared/src/types/project.types.ts",
+          "hash": "14701300988812891097"
         },
         {
-          "file": "apps/backend/src/controllers/projects.controller.ts",
-          "hash": "13746593917985665551"
-        },
-        {
-          "file": "apps/backend/src/controllers/storage.controller.ts",
-          "hash": "9028313465628106107"
-        },
-        {
-          "file": "apps/backend/src/index.ts",
-          "hash": "9376775434677113656"
-        },
-        {
-          "file": "apps/backend/src/middleware/auth.middleware.ts",
-          "hash": "13367522154671438642"
-        },
-        {
-          "file": "apps/backend/src/middleware/error.middleware.ts",
-          "hash": "8840351407711241492"
-        },
-        {
-          "file": "apps/backend/src/routes/auth.routes.ts",
-          "hash": "452657573746258158"
-        },
-        {
-          "file": "apps/backend/src/routes/blog.routes.ts",
-          "hash": "5683724838609533602"
-        },
-        {
-          "file": "apps/backend/src/routes/index.ts",
-          "hash": "17973865705443957565"
-        },
-        {
-          "file": "apps/backend/src/routes/projects.routes.ts",
-          "hash": "3359892766405241422"
-        },
-        {
-          "file": "apps/backend/src/routes/storage.routes.ts",
-          "hash": "16054636648923735593"
-        },
-        {
-          "file": "apps/backend/src/server.ts",
-          "hash": "9455632081763963882"
-        },
-        {
-          "file": "apps/backend/tsconfig.json",
-          "hash": "7166420062210823805"
+          "file": "libs/shared/tsconfig.json",
+          "hash": "4111375186474087915"
         }
       ],
       "frontend": [
@@ -316,41 +249,108 @@
           "hash": "11466931797151617590"
         }
       ],
-      "shared": [
+      "backend": [
         {
-          "file": "libs/shared/package.json",
-          "hash": "3864241186405918056",
+          "file": "apps/backend/.env.example",
+          "hash": "17007422570839445657"
+        },
+        {
+          "file": "apps/backend/Dockerfile",
+          "hash": "2599039302476741704"
+        },
+        {
+          "file": "apps/backend/package.json",
+          "hash": "8927249437863042956",
           "deps": [
-            "npm:typescript"
+            "npm:@types/express",
+            "npm:@types/cors",
+            "npm:@types/multer",
+            "npm:@types/morgan",
+            "npm:@types/node",
+            "npm:tsx",
+            "npm:typescript",
+            "shared",
+            "npm:@supabase/supabase-js",
+            "npm:express@4.22.1",
+            "npm:cors",
+            "npm:dotenv",
+            "npm:helmet",
+            "npm:express-validator",
+            "npm:multer",
+            "npm:morgan"
           ]
         },
         {
-          "file": "libs/shared/project.json",
-          "hash": "16349281970273116457"
+          "file": "apps/backend/project.json",
+          "hash": "7162410230183308255"
         },
         {
-          "file": "libs/shared/src/index.ts",
-          "hash": "5832306731458195077"
+          "file": "apps/backend/src/config/cors.ts",
+          "hash": "13110785573696790192"
         },
         {
-          "file": "libs/shared/src/types/auth.types.ts",
-          "hash": "17523489399411353545"
+          "file": "apps/backend/src/config/environment.ts",
+          "hash": "7956914114169621798"
         },
         {
-          "file": "libs/shared/src/types/blog.types.ts",
-          "hash": "10323144644467046037"
+          "file": "apps/backend/src/config/supabase.ts",
+          "hash": "16863098746693723224"
         },
         {
-          "file": "libs/shared/src/types/editorjs.types.ts",
-          "hash": "2466421505508921082"
+          "file": "apps/backend/src/controllers/auth.controller.ts",
+          "hash": "17872322945796102554"
         },
         {
-          "file": "libs/shared/src/types/project.types.ts",
-          "hash": "14701300988812891097"
+          "file": "apps/backend/src/controllers/blog.controller.ts",
+          "hash": "9063790140827223795"
         },
         {
-          "file": "libs/shared/tsconfig.json",
-          "hash": "4111375186474087915"
+          "file": "apps/backend/src/controllers/projects.controller.ts",
+          "hash": "13746593917985665551"
+        },
+        {
+          "file": "apps/backend/src/controllers/storage.controller.ts",
+          "hash": "9028313465628106107"
+        },
+        {
+          "file": "apps/backend/src/index.ts",
+          "hash": "9376775434677113656"
+        },
+        {
+          "file": "apps/backend/src/middleware/auth.middleware.ts",
+          "hash": "13367522154671438642"
+        },
+        {
+          "file": "apps/backend/src/middleware/error.middleware.ts",
+          "hash": "8840351407711241492"
+        },
+        {
+          "file": "apps/backend/src/routes/auth.routes.ts",
+          "hash": "452657573746258158"
+        },
+        {
+          "file": "apps/backend/src/routes/blog.routes.ts",
+          "hash": "5683724838609533602"
+        },
+        {
+          "file": "apps/backend/src/routes/index.ts",
+          "hash": "17973865705443957565"
+        },
+        {
+          "file": "apps/backend/src/routes/projects.routes.ts",
+          "hash": "3359892766405241422"
+        },
+        {
+          "file": "apps/backend/src/routes/storage.routes.ts",
+          "hash": "16054636648923735593"
+        },
+        {
+          "file": "apps/backend/src/server.ts",
+          "hash": "9455632081763963882"
+        },
+        {
+          "file": "apps/backend/tsconfig.json",
+          "hash": "7166420062210823805"
         }
       ]
     },
@@ -496,12 +496,16 @@
         "hash": "7497491388599428368"
       },
       {
-        "file": "playwright-report/data/4946b08cb5d1bb4b6edb78d3fb83cbb4a3342490.md",
-        "hash": "15770971948938672727"
+        "file": "playwright-report/data/537a6f86e8ffc37e4e4de8bb0cf8d5fb890ec382.md",
+        "hash": "17436837384775017774"
+      },
+      {
+        "file": "playwright-report/data/e64e1c3fb14d3ea01b22255c37076377ba39faa3.md",
+        "hash": "9900087017128729516"
       },
       {
         "file": "playwright-report/index.html",
-        "hash": "16323779270656535458"
+        "hash": "14118652429800617844"
       },
       {
         "file": "playwright.config.ts",
@@ -546,6 +550,18 @@
       {
         "file": "supabase/migrations/002_add_editorjs_support.sql",
         "hash": "5070445366307639548"
+      },
+      {
+        "file": "test-results/.last-run.json",
+        "hash": "1116092882628677249"
+      },
+      {
+        "file": "test-results/admin-Admin-Panel-should-s-d5abc-ation-errors-for-empty-form-chromium/error-context.md",
+        "hash": "9900087017128729516"
+      },
+      {
+        "file": "test-results/api-integration-API-Integr-a6297-play-API-data-source-status-chromium/error-context.md",
+        "hash": "17436837384775017774"
       },
       {
         "file": "tsconfig.base.json",
