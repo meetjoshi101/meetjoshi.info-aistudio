@@ -11,6 +11,6 @@
     "useDefineForClassFields": false,
     "experimentalDecorators": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "index.tsx"],
   "exclude": ["node_modules", "dist"]
 }

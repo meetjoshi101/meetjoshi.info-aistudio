@@ -8225,6 +8225,11 @@
     "type": "static"
   },
   {
+    "source": "npm:@playwright/test",
+    "target": "npm:playwright",
+    "type": "static"
+  },
+  {
     "source": "npm:@rolldown/binding-wasm32-wasi",
     "target": "npm:@napi-rs/wasm-runtime",
     "type": "static"
@@ -16557,6 +16562,16 @@
   {
     "source": "npm:pkijs",
     "target": "npm:tslib",
+    "type": "static"
+  },
+  {
+    "source": "npm:playwright",
+    "target": "npm:playwright-core",
+    "type": "static"
+  },
+  {
+    "source": "npm:playwright",
+    "target": "npm:fsevents@2.3.2",
     "type": "static"
   },
   {

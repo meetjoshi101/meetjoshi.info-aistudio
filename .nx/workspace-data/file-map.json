@@ -25,6 +25,110 @@
   },
   "fileMap": {
     "projectFileMap": {
+      "backend": [
+        {
+          "file": "apps/backend/.env.example",
+          "hash": "17007422570839445657"
+        },
+        {
+          "file": "apps/backend/Dockerfile",
+          "hash": "2599039302476741704"
+        },
+        {
+          "file": "apps/backend/package.json",
+          "hash": "8927249437863042956",
+          "deps": [
+            "npm:@types/express",
+            "npm:@types/cors",
+            "npm:@types/multer",
+            "npm:@types/morgan",
+            "npm:@types/node",
+            "npm:tsx",
+            "npm:typescript",
+            "shared",
+            "npm:@supabase/supabase-js",
+            "npm:express@4.22.1",
+            "npm:cors",
+            "npm:dotenv",
+            "npm:helmet",
+            "npm:express-validator",
+            "npm:multer",
+            "npm:morgan"
+          ]
+        },
+        {
+          "file": "apps/backend/project.json",
+          "hash": "7162410230183308255"
+        },
+        {
+          "file": "apps/backend/src/config/cors.ts",
+          "hash": "13110785573696790192"
+        },
+        {
+          "file": "apps/backend/src/config/environment.ts",
+          "hash": "7956914114169621798"
+        },
+        {
+          "file": "apps/backend/src/config/supabase.ts",
+          "hash": "16863098746693723224"
+        },
+        {
+          "file": "apps/backend/src/controllers/auth.controller.ts",
+          "hash": "17872322945796102554"
+        },
+        {
+          "file": "apps/backend/src/controllers/blog.controller.ts",
+          "hash": "9063790140827223795"
+        },
+        {
+          "file": "apps/backend/src/controllers/projects.controller.ts",
+          "hash": "13746593917985665551"
+        },
+        {
+          "file": "apps/backend/src/controllers/storage.controller.ts",
+          "hash": "9028313465628106107"
+        },
+        {
+          "file": "apps/backend/src/index.ts",
+          "hash": "9376775434677113656"
+        },
+        {
+          "file": "apps/backend/src/middleware/auth.middleware.ts",
+          "hash": "13367522154671438642"
+        },
+        {
+          "file": "apps/backend/src/middleware/error.middleware.ts",
+          "hash": "8840351407711241492"
+        },
+        {
+          "file": "apps/backend/src/routes/auth.routes.ts",
+          "hash": "452657573746258158"
+        },
+        {
+          "file": "apps/backend/src/routes/blog.routes.ts",
+          "hash": "5683724838609533602"
+        },
+        {
+          "file": "apps/backend/src/routes/index.ts",
+          "hash": "17973865705443957565"
+        },
+        {
+          "file": "apps/backend/src/routes/projects.routes.ts",
+          "hash": "3359892766405241422"
+        },
+        {
+          "file": "apps/backend/src/routes/storage.routes.ts",
+          "hash": "16054636648923735593"
+        },
+        {
+          "file": "apps/backend/src/server.ts",
+          "hash": "9455632081763963882"
+        },
+        {
+          "file": "apps/backend/tsconfig.json",
+          "hash": "7166420062210823805"
+        }
+      ],
       "frontend": [
         {
           "file": "apps/frontend/Dockerfile",
@@ -33,6 +137,14 @@
         {
           "file": "apps/frontend/angular.json",
           "hash": "13697092685438457367"
+        },
+        {
+          "file": "apps/frontend/index.html",
+          "hash": "15336769521610756713"
+        },
+        {
+          "file": "apps/frontend/index.tsx",
+          "hash": "17882565751943313099"
         },
         {
           "file": "apps/frontend/nginx.conf",
@@ -201,7 +313,7 @@
         },
         {
           "file": "apps/frontend/tsconfig.json",
-          "hash": "8944779941675350438"
+          "hash": "11466931797151617590"
         }
       ],
       "shared": [
@@ -239,110 +351,6 @@
         {
           "file": "libs/shared/tsconfig.json",
           "hash": "4111375186474087915"
-        }
-      ],
-      "backend": [
-        {
-          "file": "apps/backend/.env.example",
-          "hash": "17007422570839445657"
-        },
-        {
-          "file": "apps/backend/Dockerfile",
-          "hash": "2599039302476741704"
-        },
-        {
-          "file": "apps/backend/package.json",
-          "hash": "8927249437863042956",
-          "deps": [
-            "npm:@types/express",
-            "npm:@types/cors",
-            "npm:@types/multer",
-            "npm:@types/morgan",
-            "npm:@types/node",
-            "npm:tsx",
-            "npm:typescript",
-            "shared",
-            "npm:@supabase/supabase-js",
-            "npm:express@4.22.1",
-            "npm:cors",
-            "npm:dotenv",
-            "npm:helmet",
-            "npm:express-validator",
-            "npm:multer",
-            "npm:morgan"
-          ]
-        },
-        {
-          "file": "apps/backend/project.json",
-          "hash": "7162410230183308255"
-        },
-        {
-          "file": "apps/backend/src/config/cors.ts",
-          "hash": "13110785573696790192"
-        },
-        {
-          "file": "apps/backend/src/config/environment.ts",
-          "hash": "7956914114169621798"
-        },
-        {
-          "file": "apps/backend/src/config/supabase.ts",
-          "hash": "16863098746693723224"
-        },
-        {
-          "file": "apps/backend/src/controllers/auth.controller.ts",
-          "hash": "17872322945796102554"
-        },
-        {
-          "file": "apps/backend/src/controllers/blog.controller.ts",
-          "hash": "9063790140827223795"
-        },
-        {
-          "file": "apps/backend/src/controllers/projects.controller.ts",
-          "hash": "13746593917985665551"
-        },
-        {
-          "file": "apps/backend/src/controllers/storage.controller.ts",
-          "hash": "9028313465628106107"
-        },
-        {
-          "file": "apps/backend/src/index.ts",
-          "hash": "9376775434677113656"
-        },
-        {
-          "file": "apps/backend/src/middleware/auth.middleware.ts",
-          "hash": "13367522154671438642"
-        },
-        {
-          "file": "apps/backend/src/middleware/error.middleware.ts",
-          "hash": "8840351407711241492"
-        },
-        {
-          "file": "apps/backend/src/routes/auth.routes.ts",
-          "hash": "452657573746258158"
-        },
-        {
-          "file": "apps/backend/src/routes/blog.routes.ts",
-          "hash": "5683724838609533602"
-        },
-        {
-          "file": "apps/backend/src/routes/index.ts",
-          "hash": "17973865705443957565"
-        },
-        {
-          "file": "apps/backend/src/routes/projects.routes.ts",
-          "hash": "3359892766405241422"
-        },
-        {
-          "file": "apps/backend/src/routes/storage.routes.ts",
-          "hash": "16054636648923735593"
-        },
-        {
-          "file": "apps/backend/src/server.ts",
-          "hash": "9455632081763963882"
-        },
-        {
-          "file": "apps/backend/tsconfig.json",
-          "hash": "7166420062210823805"
         }
       ]
     },
@@ -404,6 +412,10 @@
         "hash": "15207052319676405027"
       },
       {
+        "file": "NX_MIGRATION_SUMMARY.md",
+        "hash": "10694716202622678527"
+      },
+      {
         "file": "README.md",
         "hash": "11662949883279187349"
       },
@@ -412,8 +424,44 @@
         "hash": "16173584567945384746"
       },
       {
+        "file": "affected-graph.html",
+        "hash": "6986935609089304540"
+      },
+      {
         "file": "cloudrun.yaml",
         "hash": "18169611167182835274"
+      },
+      {
+        "file": "e2e/admin.spec.ts",
+        "hash": "17522085843177398797"
+      },
+      {
+        "file": "e2e/api-integration.spec.ts",
+        "hash": "736174579857561442"
+      },
+      {
+        "file": "e2e/blog.spec.ts",
+        "hash": "7372130120372565391"
+      },
+      {
+        "file": "e2e/home.spec.ts",
+        "hash": "18114957725227563692"
+      },
+      {
+        "file": "e2e/navigation.spec.ts",
+        "hash": "10379887225460997840"
+      },
+      {
+        "file": "e2e/performance.spec.ts",
+        "hash": "14708323815473064636"
+      },
+      {
+        "file": "e2e/projects.spec.ts",
+        "hash": "7962528620677999988"
+      },
+      {
+        "file": "e2e/responsive.spec.ts",
+        "hash": "10594176996494464060"
       },
       {
         "file": "graph.html",
@@ -441,15 +489,27 @@
       },
       {
         "file": "package-lock.json",
-        "hash": "16562097264871678753"
+        "hash": "2203347196588029152"
       },
       {
         "file": "package.json",
-        "hash": "15647942486904510588"
+        "hash": "7497491388599428368"
+      },
+      {
+        "file": "playwright-report/data/4946b08cb5d1bb4b6edb78d3fb83cbb4a3342490.md",
+        "hash": "15770971948938672727"
+      },
+      {
+        "file": "playwright-report/index.html",
+        "hash": "16323779270656535458"
+      },
+      {
+        "file": "playwright.config.ts",
+        "hash": "5593359452808511885"
       },
       {
         "file": "static/environment.js",
-        "hash": "669634332184325511"
+        "hash": "18431464390513855302"
       },
       {
         "file": "static/favicon.ico",
@@ -497,5 +557,5 @@
       }
     ]
   },
-  "externalNodesHash": "2882877324125255343"
+  "externalNodesHash": "11841361729527233513"
 }

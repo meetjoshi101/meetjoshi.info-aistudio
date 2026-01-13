@@ -1,8 +1,8 @@
 {
   "run": {
-    "command": "nx run-many -t build --all --skip-nx-cache",
-    "startTime": "2026-01-13T08:11:37.354Z",
-    "endTime": "2026-01-13T08:11:46.011Z",
+    "command": "nx run-many -t build --all",
+    "startTime": "2026-01-13T10:08:57.832Z",
+    "endTime": "2026-01-13T10:09:07.343Z",
     "inner": false
   },
   "tasks": [
@@ -10,9 +10,9 @@
       "taskId": "shared:build",
       "target": "build",
       "projectName": "shared",
-      "hash": "1223803481405904639",
-      "startTime": "2026-01-13T08:11:37.364Z",
-      "endTime": "2026-01-13T08:11:41.825Z",
+      "hash": "16860417605477998787",
+      "startTime": "2026-01-13T10:08:57.845Z",
+      "endTime": "2026-01-13T10:09:01.740Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 0
@@ -21,9 +21,9 @@
       "taskId": "frontend:build",
       "target": "build",
       "projectName": "frontend",
-      "hash": "16636910530428412521",
-      "startTime": "2026-01-13T08:11:41.830Z",
-      "endTime": "2026-01-13T08:11:41.849Z",
+      "hash": "17118292147823077626",
+      "startTime": "2026-01-13T10:09:01.760Z",
+      "endTime": "2026-01-13T10:09:01.793Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 0
@@ -32,9 +32,9 @@
       "taskId": "backend:build",
       "target": "build",
       "projectName": "backend",
-      "hash": "4296561287025269489",
-      "startTime": "2026-01-13T08:11:41.830Z",
-      "endTime": "2026-01-13T08:11:46.010Z",
+      "hash": "1757395216111231368",
+      "startTime": "2026-01-13T10:09:01.760Z",
+      "endTime": "2026-01-13T10:09:07.307Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 0

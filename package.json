@@ -24,6 +24,10 @@
     "affected:test": "nx affected -t test",
     "affected:lint": "nx affected -t lint",
     "graph": "nx graph",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
+    "e2e:report": "playwright show-report",
     "docker:build-frontend": "docker build -f apps/frontend/Dockerfile -t meetjoshi-frontend:latest .",
     "docker:build-backend": "docker build -f apps/backend/Dockerfile -t meetjoshi-backend:latest .",
     "docker:build-all": "npm run docker:build-frontend && npm run docker:build-backend"
@@ -34,8 +38,10 @@
     "@nx/node": "^22.3.3",
     "@nx/vite": "^22.3.3",
     "@nx/workspace": "^22.3.3",
+    "@playwright/test": "^1.57.0",
     "concurrently": "^9.1.0",
     "nx": "^22.3.3",
+    "playwright": "^1.57.0",
     "typescript": "~5.9.3"
   }
 }
