@@ -1,29 +1,42 @@
-name: Deploy Frontend to Cloud Run
+name: Deploy Frontend to Cloud Run (Dev)
 
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - 'apps/frontend/**'
       - 'libs/shared/**'
-      - '.github/workflows/deploy-frontend.yml'
+      - '.github/workflows/deploy-frontend-dev.yml'
   workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: meetjoshi-frontend
+  SERVICE_NAME: meetjoshi-frontend-dev
   REGION: us-central1
-  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/meetjoshi-frontend
+  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/meetjoshi-frontend-dev
 
 jobs:
   deploy:
-    name: Build and Deploy Frontend
+    name: Build and Deploy Frontend (Dev)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Nx affected build
+        run: |
+          npx nx affected -t build --base=origin/main --exclude='e2e'
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -43,15 +56,16 @@ jobs:
         run: |
           docker build \
             -f apps/frontend/Dockerfile \
-            --build-arg API_URL=${{ secrets.BACKEND_API_URL }} \
+            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --tag ${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --tag ${{ env.IMAGE_NAME }}:latest \
+            --tag ${{ env.IMAGE_NAME }}:dev \
             .
 
       - name: Push Docker image to GCR
         run: |
           docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:dev
 
       - name: Deploy to Cloud Run
         run: |
@@ -63,7 +77,7 @@ jobs:
             --memory 512Mi \
             --cpu 1 \
             --min-instances 0 \
-            --max-instances 10 \
+            --max-instances 5 \
             --timeout 300s \
             --quiet
 
@@ -73,17 +87,20 @@ jobs:
             --platform managed \
             --region ${{ env.REGION }} \
             --format 'value(status.url)')
-          echo "Frontend deployed to: $SERVICE_URL"
+          echo "Frontend (Dev) deployed to: $SERVICE_URL"
           echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
 
       - name: Create deployment summary
         run: |
-          echo "## 🚀 Frontend Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Frontend Deployment Successful (Dev Environment)!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** Development" >> $GITHUB_STEP_SUMMARY
           echo "**Service URL:** ${{ env.SERVICE_URL }}" >> $GITHUB_STEP_SUMMARY
           echo "**Image:** \`${{ env.IMAGE_NAME }}:${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Region:** ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** dev" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
-          echo "1. Update \`FRONTEND_URL\` secret with: \`${{ env.SERVICE_URL }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "2. Redeploy backend to update CORS settings" >> $GITHUB_STEP_SUMMARY
+          echo "1. Test the dev frontend at: ${{ env.SERVICE_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "2. If testing passes, merge dev branch to main for production deployment" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update backend CORS if needed with this URL" >> $GITHUB_STEP_SUMMARY

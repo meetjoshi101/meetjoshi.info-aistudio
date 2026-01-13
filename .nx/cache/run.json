@@ -1,0 +1,43 @@
+{
+  "run": {
+    "command": "nx run-many -t build --all",
+    "startTime": "2026-01-13T10:08:57.832Z",
+    "endTime": "2026-01-13T10:09:07.343Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "shared:build",
+      "target": "build",
+      "projectName": "shared",
+      "hash": "16860417605477998787",
+      "startTime": "2026-01-13T10:08:57.845Z",
+      "endTime": "2026-01-13T10:09:01.740Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "frontend:build",
+      "target": "build",
+      "projectName": "frontend",
+      "hash": "17118292147823077626",
+      "startTime": "2026-01-13T10:09:01.760Z",
+      "endTime": "2026-01-13T10:09:01.793Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "backend:build",
+      "target": "build",
+      "projectName": "backend",
+      "hash": "1757395216111231368",
+      "startTime": "2026-01-13T10:09:01.760Z",
+      "endTime": "2026-01-13T10:09:07.307Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}

@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .angular
+.nx
 
 # Environment files with secrets
 .env
