@@ -242,7 +242,39 @@ Access the admin panel at `/admin/login`
 
 ## Deployment
 
-### Docker
+### Environments
+
+This project supports two deployment environments:
+
+- **Development (`dev` branch)** → `meetjoshi-*-dev` Cloud Run services
+- **Production (`main` branch)** → `meetjoshi-*` Cloud Run services
+
+📚 **For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**
+
+### Quick Start - Dev Environment
+
+1. **Create dev branch:**
+   ```bash
+   git checkout -b dev
+   git push -u origin dev
+   ```
+
+2. **Set GitHub secrets** (see DEPLOYMENT_GUIDE.md for full list)
+
+3. **Deploy to dev:**
+   ```bash
+   git checkout dev
+   git push origin dev  # Automatically deploys to dev environment
+   ```
+
+4. **Deploy to production:**
+   ```bash
+   git checkout main
+   git merge dev
+   git push origin main  # Automatically deploys to production
+   ```
+
+### Docker (Local Testing)
 
 Build and run locally:
 
@@ -250,7 +282,8 @@ Build and run locally:
 # Frontend
 docker build \
   -f apps/frontend/Dockerfile \
-  --build-arg API_URL=your_backend_url \
+  --build-arg SUPABASE_URL=your_url \
+  --build-arg SUPABASE_ANON_KEY=your_key \
   -t meetjoshi-frontend .
 docker run -p 8080:8080 meetjoshi-frontend
 
@@ -266,27 +299,37 @@ docker run -p 8080:8080 \
 
 ### Google Cloud Run
 
-1. Set GitHub secrets:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `GCP_PROJECT_ID`
-   - `GCP_SA_KEY`
-   - `BACKEND_API_URL`
-   - `FRONTEND_URL`
+**Required GitHub Secrets:**
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- `GCP_PROJECT_ID`, `GCP_SA_KEY`
+- `BACKEND_API_URL`, `FRONTEND_URL` (production)
+- `BACKEND_API_URL_DEV`, `FRONTEND_URL_DEV` (development)
 
-2. Push to `main` branch - GitHub Actions will:
-   - Run Nx affected builds (only build what changed)
-   - Build Docker images with credentials
-   - Push to Google Container Registry
-   - Deploy to Cloud Run
+**Deployment Process:**
+1. Push to `dev` branch → Deploys to dev environment
+2. Test on dev environment
+3. Push to `main` branch → Deploys to production
+
+GitHub Actions automatically:
+- Run Nx affected builds (only build what changed)
+- Build Docker images with credentials
+- Push to Google Container Registry
+- Deploy to Cloud Run
 
 ## CI/CD
 
-- `.github/workflows/deploy-frontend.yml`: Auto-deploy frontend on changes to `apps/frontend/**` or `libs/shared/**`
-- `.github/workflows/deploy-backend.yml`: Auto-deploy backend on changes to `apps/backend/**` or `libs/shared/**`
-- `.github/workflows/pr-validation.yml`: Run Nx affected builds/tests/lints on PRs
-- Uses Nx affected commands to only build/test changed projects
+### Production Workflows
+- `.github/workflows/deploy-frontend.yml`: Auto-deploy frontend on push to `main`
+- `.github/workflows/deploy-backend.yml`: Auto-deploy backend on push to `main`
+
+### Development Workflows
+- `.github/workflows/deploy-frontend-dev.yml`: Auto-deploy frontend on push to `dev`
+- `.github/workflows/deploy-backend-dev.yml`: Auto-deploy backend on push to `dev`
+
+### Validation
+- `.github/workflows/pr-validation.yml`: Run Nx affected builds/tests/lints on PRs to `main` or `dev`
+
+All workflows use Nx affected commands to only build/test changed projects for maximum efficiency.
 
 ## Nx Benefits
 
@@ -319,7 +362,9 @@ docker run -p 8080:8080 \
 
 ## Documentation
 
-For detailed development guidelines and architectural decisions, see [CLAUDE.md](CLAUDE.md).
+- **[CLAUDE.md](CLAUDE.md)** - Development guidelines and architectural decisions
+- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Comprehensive deployment guide for dev and production environments
+- **[NX_MIGRATION_SUMMARY.md](NX_MIGRATION_SUMMARY.md)** - Nx monorepo migration summary and benefits
 
 ## License
 
