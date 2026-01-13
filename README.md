@@ -1,6 +1,6 @@
-# Portfolio Website with Admin Panel
+# Portfolio Website with Admin Panel - Nx Monorepo
 
-A modern personal portfolio website built with Angular 21 and Supabase, featuring a public-facing portfolio site and an authenticated admin panel for content management.
+A modern personal portfolio website built with Angular 21 and Supabase, featuring a public-facing portfolio site and an authenticated admin panel for content management. This project uses Nx for efficient monorepo management, task orchestration, and build caching.
 
 ## Features
 
@@ -19,7 +19,9 @@ A modern personal portfolio website built with Angular 21 and Supabase, featurin
   - Draft/publish workflow
 
 - **Technical Highlights**
+  - **Nx Monorepo**: Smart build system with computation caching
   - Angular 21 with standalone components
+  - Express.js backend API
   - Vite for fast builds
   - Tailwind CSS for styling
   - Supabase for backend (PostgreSQL, Auth, Storage)
@@ -30,13 +32,27 @@ A modern personal portfolio website built with Angular 21 and Supabase, featurin
 
 ## Tech Stack
 
-### Frontend
+### Monorepo
+- **Build System**: Nx 22
+- **Task Runner**: Nx with intelligent caching
+- **Affected Commands**: Build/test only what changed
+
+### Frontend (`apps/frontend`)
 - **Framework**: Angular 21 (standalone components)
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS
 - **Rich Text Editor**: EditorJS with plugins (header, list, image, quote, code, table, embed, link)
 
-### Backend
+### Backend (`apps/backend`)
+- **Framework**: Express.js
+- **Runtime**: Node.js 20
+- **Build Tool**: TypeScript Compiler
+
+### Shared Library (`libs/shared`)
+- **Purpose**: Shared TypeScript types and utilities
+- **Used by**: Frontend and Backend applications
+
+### Infrastructure
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
 - **File Storage**: Supabase Storage
@@ -45,7 +61,7 @@ A modern personal portfolio website built with Angular 21 and Supabase, featurin
 ## Prerequisites
 
 - Node.js 20 or higher
-- npm or yarn
+- npm
 - Supabase account (free tier works)
 - Docker (optional, for containerized deployment)
 - Google Cloud Platform account (optional, for production deployment)
@@ -70,7 +86,8 @@ npm install
 
 ### 3. Environment Configuration
 
-Update `src/environments/environment.ts`:
+#### Frontend
+Update `apps/frontend/src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
@@ -80,30 +97,83 @@ export const environment = {
 };
 ```
 
-Update `src/environments/environment.prod.ts` with the same credentials for production.
+Update `apps/frontend/src/environments/environment.prod.ts` with the same credentials for production.
 
-### 4. Run Development Server
+#### Backend
+Create `apps/backend/.env`:
 
-```bash
-npm run dev
+```env
+NODE_ENV=development
+PORT=3001
+SUPABASE_URL=YOUR_SUPABASE_URL
+SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+FRONTEND_URL=http://localhost:3000
 ```
 
-Visit http://localhost:3000
+### 4. Run Development Servers
+
+```bash
+# Run both frontend and backend in parallel
+npm run dev
+
+# Or run individually
+npm run dev:frontend  # Frontend on http://localhost:3000
+npm run dev:backend   # Backend on http://localhost:3001
+```
 
 ## Development Commands
 
+### Nx Commands
+
 ```bash
-# Development
-npm run dev              # Start dev server
-npm run build            # Production build
-npm run preview          # Preview production build
+# Run both apps in parallel
+npm run dev
 
-# Docker (Local Testing)
-npm run docker:build     # Build Docker image
-npm run docker:run       # Run container on port 8080
-npm run docker:build-run # Build and run in sequence
+# Build all projects
+npm run build
 
-# Google Cloud Platform (Update PROJECT_ID in package.json first)
+# Build specific project
+npm run build:frontend
+npm run build:backend
+npm run build:shared
+
+# Test all projects
+npm run test
+
+# Test specific project
+npm run test:frontend
+npm run test:backend
+
+# Lint all projects
+npm run lint
+
+# Nx affected commands (only build/test what changed)
+npm run affected:build
+npm run affected:test
+npm run affected:lint
+
+# View dependency graph
+npm run graph
+```
+
+### Docker Commands
+
+```bash
+# Build Docker images
+npm run docker:build-frontend
+npm run docker:build-backend
+npm run docker:build-all
+
+# Run containers
+docker run -p 8080:8080 meetjoshi-frontend:latest
+docker run -p 8080:8080 meetjoshi-backend:latest
+```
+
+### Google Cloud Platform
+
+```bash
+# Update PROJECT_ID in package.json first
 npm run gcp:build        # Build and push to GCR
 npm run gcp:deploy       # Deploy to Cloud Run
 ```
@@ -111,36 +181,42 @@ npm run gcp:deploy       # Deploy to Cloud Run
 ## Project Structure
 
 ```
-src/
-├── pages/                    # Route components
-│   ├── admin/               # Admin panel pages
-│   │   ├── dashboard/
-│   │   ├── login/
-│   │   ├── projects/
-│   │   └── blog/
-│   ├── home/
-│   ├── projects/
-│   ├── blog/
-│   ├── about/
-│   └── contact/
-├── components/              # Reusable components
-│   ├── navbar/
-│   ├── footer/
-│   ├── project-card/
-│   ├── blog-card/
-│   └── block-renderer/     # EditorJS content renderer
-├── services/                # Angular services
-│   ├── supabase.service.ts # Supabase client
-│   ├── auth.service.ts     # Authentication
-│   ├── data.service.ts     # CRUD operations
-│   ├── editorjs.service.ts # Rich text editor
-│   └── theme.service.ts    # Dark/light mode
-├── guards/
-│   └── auth.guard.ts       # Route protection
-└── environments/            # Environment configs
-
-supabase/
-└── migrations/              # Database migrations
+/
+├── apps/
+│   ├── frontend/              # Angular application
+│   │   ├── src/
+│   │   │   ├── pages/         # Route components
+│   │   │   │   ├── admin/     # Admin panel pages
+│   │   │   │   ├── home/
+│   │   │   │   ├── projects/
+│   │   │   │   ├── blog/
+│   │   │   │   ├── about/
+│   │   │   │   └── contact/
+│   │   │   ├── components/    # Reusable components
+│   │   │   ├── services/      # Angular services
+│   │   │   ├── guards/        # Route guards
+│   │   │   └── environments/  # Environment configs
+│   │   ├── project.json       # Nx project configuration
+│   │   └── Dockerfile
+│   │
+│   └── backend/               # Express.js API
+│       ├── src/
+│       │   ├── routes/        # API routes
+│       │   ├── middleware/    # Express middleware
+│       │   └── server.ts      # Server entry point
+│       ├── project.json       # Nx project configuration
+│       └── Dockerfile
+│
+├── libs/
+│   └── shared/                # Shared TypeScript library
+│       ├── src/
+│       │   ├── types/         # Shared type definitions
+│       │   └── index.ts       # Public API
+│       └── project.json       # Nx project configuration
+│
+├── nx.json                    # Nx workspace configuration
+├── package.json               # Root package.json
+└── tsconfig.base.json         # Base TypeScript config
 ```
 
 ## Database Schema
@@ -171,11 +247,21 @@ Access the admin panel at `/admin/login`
 Build and run locally:
 
 ```bash
+# Frontend
 docker build \
-  --build-arg SUPABASE_URL=your_url \
-  --build-arg SUPABASE_ANON_KEY=your_key \
-  -t portfolio .
-docker run -p 8080:8080 portfolio
+  -f apps/frontend/Dockerfile \
+  --build-arg API_URL=your_backend_url \
+  -t meetjoshi-frontend .
+docker run -p 8080:8080 meetjoshi-frontend
+
+# Backend
+docker build \
+  -f apps/backend/Dockerfile \
+  -t meetjoshi-backend .
+docker run -p 8080:8080 \
+  -e SUPABASE_URL=your_url \
+  -e SUPABASE_ANON_KEY=your_key \
+  meetjoshi-backend
 ```
 
 ### Google Cloud Run
@@ -183,18 +269,33 @@ docker run -p 8080:8080 portfolio
 1. Set GitHub secrets:
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
    - `GCP_PROJECT_ID`
    - `GCP_SA_KEY`
+   - `BACKEND_API_URL`
+   - `FRONTEND_URL`
 
 2. Push to `main` branch - GitHub Actions will:
-   - Build Docker image with credentials
+   - Run Nx affected builds (only build what changed)
+   - Build Docker images with credentials
    - Push to Google Container Registry
    - Deploy to Cloud Run
 
 ## CI/CD
 
-- `.github/workflows/deploy.yml`: Auto-deploy on push to `main`
-- `.github/workflows/pr-validation.yml`: Validate builds on PRs
+- `.github/workflows/deploy-frontend.yml`: Auto-deploy frontend on changes to `apps/frontend/**` or `libs/shared/**`
+- `.github/workflows/deploy-backend.yml`: Auto-deploy backend on changes to `apps/backend/**` or `libs/shared/**`
+- `.github/workflows/pr-validation.yml`: Run Nx affected builds/tests/lints on PRs
+- Uses Nx affected commands to only build/test changed projects
+
+## Nx Benefits
+
+- **Smart Builds**: Only rebuilds affected projects when code changes
+- **Computation Caching**: Reuses previous build results for unchanged projects
+- **Task Orchestration**: Runs tasks in the correct order with proper dependencies
+- **Distributed Caching**: Share cache between CI and local development (optional)
+- **Dependency Graph**: Visualize project dependencies with `npm run graph`
+- **Affected Commands**: Test only what's affected by your changes
 
 ## Content Management
 

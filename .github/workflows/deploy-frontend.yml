@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'packages/frontend/**'
-      - 'packages/shared/**'
+      - 'apps/frontend/**'
+      - 'libs/shared/**'
       - '.github/workflows/deploy-frontend.yml'
   workflow_dispatch:
 
@@ -42,7 +42,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -f packages/frontend/Dockerfile \
+            -f apps/frontend/Dockerfile \
             --build-arg API_URL=${{ secrets.BACKEND_API_URL }} \
             --tag ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --tag ${{ env.IMAGE_NAME }}:latest \

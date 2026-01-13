@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'packages/backend/**'
-      - 'packages/shared/**'
+      - 'apps/backend/**'
+      - 'libs/shared/**'
       - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:
 
@@ -42,7 +42,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -f packages/backend/Dockerfile \
+            -f apps/backend/Dockerfile \
             --tag ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --tag ${{ env.IMAGE_NAME }}:latest \
             .

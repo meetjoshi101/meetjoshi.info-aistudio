@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx build shared",
+    "startTime": "2026-01-13T08:08:25.580Z",
+    "endTime": "2026-01-13T08:08:25.604Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "shared:build",
+      "target": "build",
+      "projectName": "shared",
+      "hash": "1223803481405904639",
+      "startTime": "2026-01-13T08:08:25.591Z",
+      "endTime": "2026-01-13T08:08:25.603Z",
+      "params": "",
+      "cacheStatus": "local-cache-hit",
+      "status": 0
+    }
+  ]
+}
