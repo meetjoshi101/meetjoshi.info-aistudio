@@ -44,6 +44,8 @@ jobs:
           docker build \
             -f apps/frontend/Dockerfile \
             --build-arg API_URL=${{ secrets.BACKEND_API_URL }} \
+            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --tag ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --tag ${{ env.IMAGE_NAME }}:latest \
             .
@@ -59,13 +61,21 @@ jobs:
             --image ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --platform managed \
             --region ${{ env.REGION }} \
-            --allow-unauthenticated \
             --memory 512Mi \
             --cpu 1 \
             --min-instances 0 \
             --max-instances 10 \
             --timeout 300s \
             --quiet
+
+      - name: Allow unauthenticated access (if needed)
+        run: |
+          gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --member="allUsers" \
+            --role="roles/run.invoker" \
+            --quiet || echo "⚠️  Warning: Could not set public access. Run manually if needed."
+        continue-on-error: true
 
       - name: Get Service URL
         run: |
