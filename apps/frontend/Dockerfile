@@ -23,9 +23,13 @@ COPY apps/frontend ./apps/frontend
 
 # Replace placeholders in environment file (before build)
 RUN if [ -f apps/frontend/src/environments/environment.prod.ts ]; then \
+        echo "=== Before replacement ===" && \
+        cat apps/frontend/src/environments/environment.prod.ts && \
         sed -i "s|API_URL_PLACEHOLDER|${API_URL}|g" apps/frontend/src/environments/environment.prod.ts && \
         sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" apps/frontend/src/environments/environment.prod.ts && \
-        sed -i "s|YOUR_SUPABASE_ANON_KEY|${SUPABASE_ANON_KEY}|g" apps/frontend/src/environments/environment.prod.ts; \
+        sed -i "s|YOUR_SUPABASE_ANON_KEY|${SUPABASE_ANON_KEY}|g" apps/frontend/src/environments/environment.prod.ts && \
+        echo "=== After replacement ===" && \
+        cat apps/frontend/src/environments/environment.prod.ts; \
     fi
 
 # Build using Nx
