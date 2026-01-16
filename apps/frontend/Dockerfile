@@ -19,14 +19,14 @@ RUN npm ci
 COPY libs/shared ./libs/shared
 COPY apps/frontend ./apps/frontend
 
-# Build using Nx
-RUN npx nx build shared
-RUN npx nx build frontend --configuration=production
-
-# Replace API URL placeholder in environment file
+# Replace API URL placeholder in environment file (before build)
 RUN if [ -f apps/frontend/src/environments/environment.prod.ts ]; then \
         sed -i "s|API_URL_PLACEHOLDER|${API_URL}|g" apps/frontend/src/environments/environment.prod.ts; \
     fi
+
+# Build using Nx
+RUN npx nx build shared
+RUN cd apps/frontend && npm run build:prod
 
 # Stage 2: Serve with NGINX
 FROM nginx:alpine
