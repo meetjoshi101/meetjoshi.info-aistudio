@@ -28,14 +28,14 @@ jobs:
         run: npm ci
 
       - name: Run Nx affected build
-        run: npx nx affected -t build --base=origin/main --head=HEAD
+        run: npx nx affected -t build --base=origin/${{ github.base_ref }} --head=HEAD
 
       - name: Run Nx affected tests
-        run: npx nx affected -t test --base=origin/main --head=HEAD
+        run: npx nx affected -t test --base=origin/${{ github.base_ref }} --head=HEAD
         continue-on-error: true
 
       - name: Run Nx affected lint
-        run: npx nx affected -t lint --base=origin/main --head=HEAD
+        run: npx nx affected -t lint --base=origin/${{ github.base_ref }} --head=HEAD
         continue-on-error: true
 
       - name: Build Docker image (validation)

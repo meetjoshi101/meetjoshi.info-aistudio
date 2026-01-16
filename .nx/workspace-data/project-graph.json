@@ -15785,6 +15785,11 @@
       },
       {
         "source": "frontend",
+        "target": "npm:@supabase/supabase-js",
+        "type": "static"
+      },
+      {
+        "source": "frontend",
         "target": "npm:rxjs",
         "type": "static"
       },
@@ -36583,5 +36588,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1768539265650
+  "computedAt": 1768543386530
 }
