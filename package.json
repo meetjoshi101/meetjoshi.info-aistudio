@@ -34,14 +34,19 @@
   },
   "devDependencies": {
     "@nx/angular": "^22.3.3",
+    "@nx/jest": "^22.3.3",
     "@nx/js": "^22.3.3",
     "@nx/node": "^22.3.3",
     "@nx/vite": "^22.3.3",
     "@nx/workspace": "^22.3.3",
     "@playwright/test": "^1.57.0",
+    "@types/jest": "^30.0.0",
     "concurrently": "^9.1.0",
+    "jest": "^30.0.0",
+    "jest-preset-angular": "16.0.0",
     "nx": "^22.3.3",
     "playwright": "^1.57.0",
+    "ts-jest": "^29.2.3",
     "typescript": "~5.9.3"
   }
 }

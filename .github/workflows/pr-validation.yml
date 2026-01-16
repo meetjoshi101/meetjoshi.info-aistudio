@@ -41,6 +41,8 @@ jobs:
       - name: Build Docker image (validation)
         run: |
           docker build \
+            -f apps/frontend/Dockerfile \
+            --build-arg API_URL=http://localhost:3001 \
             --tag meetjoshi-portfolio:pr-${{ github.event.pull_request.number }} \
             .
 
