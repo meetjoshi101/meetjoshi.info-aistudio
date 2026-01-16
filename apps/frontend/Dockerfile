@@ -2,6 +2,8 @@
 FROM node:20-alpine AS builder
 
 ARG API_URL
+ARG SUPABASE_URL
+ARG SUPABASE_ANON_KEY
 
 WORKDIR /app
 
@@ -19,9 +21,11 @@ RUN npm ci
 COPY libs/shared ./libs/shared
 COPY apps/frontend ./apps/frontend
 
-# Replace API URL placeholder in environment file (before build)
+# Replace placeholders in environment file (before build)
 RUN if [ -f apps/frontend/src/environments/environment.prod.ts ]; then \
-        sed -i "s|API_URL_PLACEHOLDER|${API_URL}|g" apps/frontend/src/environments/environment.prod.ts; \
+        sed -i "s|API_URL_PLACEHOLDER|${API_URL}|g" apps/frontend/src/environments/environment.prod.ts && \
+        sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" apps/frontend/src/environments/environment.prod.ts && \
+        sed -i "s|YOUR_SUPABASE_ANON_KEY|${SUPABASE_ANON_KEY}|g" apps/frontend/src/environments/environment.prod.ts; \
     fi
 
 # Build using Nx
