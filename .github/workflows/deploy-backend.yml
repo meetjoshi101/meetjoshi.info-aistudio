@@ -65,7 +65,6 @@ jobs:
             --max-instances 10 \
             --timeout 300s \
             --set-env-vars "NODE_ENV=production" \
-            --set-env-vars "PORT=8080" \
             --set-env-vars "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" \
             --set-env-vars "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" \
             --set-env-vars "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
