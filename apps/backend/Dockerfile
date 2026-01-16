@@ -42,7 +42,6 @@ COPY --from=builder /app/libs/shared/package.json ./libs/shared/package.json
 
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=8080
 
 # Expose port
 EXPOSE 8080
