@@ -4,42 +4,114 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal portfolio website built with **Angular 21** using Vite as the build tool. It features a public-facing portfolio site with projects and blog posts, plus an authenticated admin panel for content management. The backend is powered by **Supabase** (PostgreSQL database, authentication, and storage).
+This is a personal portfolio website built as an **Nx monorepo** with Angular 21 frontend, Express.js backend, and a shared TypeScript library. The frontend features a public-facing portfolio site with projects and blog posts, plus an authenticated admin panel for content management. The backend is an Express API powered by **Supabase** (PostgreSQL database, authentication, and storage).
+
+## Nx Monorepo Structure
+
+This project uses Nx for efficient monorepo management with smart builds and computation caching.
+
+```
+/
+├── apps/
+│   ├── frontend/          # Angular 21 application
+│   └── backend/           # Express.js API
+├── libs/
+│   └── shared/            # Shared TypeScript types/utilities
+├── nx.json                # Nx workspace configuration
+└── package.json           # Root package.json with workspaces
+```
 
 ## Development Commands
 
 ### Local Development
+
 ```bash
-npm install              # Install dependencies
-npm run dev              # Start dev server on http://localhost:3000
-npm run build            # Production build
-npm run build:prod       # Production build (explicit)
-npm run preview          # Serve production build locally
+# Install dependencies
+npm install
+
+# Run both frontend and backend in parallel
+npm run dev
+
+# Run individually
+npm run dev:frontend       # Angular on http://localhost:3000
+npm run dev:backend        # Express on http://localhost:3001
+
+# Build all projects
+npm run build
+
+# Build specific projects
+npm run build:frontend
+npm run build:backend
+npm run build:shared
+
+# Test all projects
+npm run test
+
+# Nx affected commands (smart builds)
+npm run affected:build     # Build only affected projects
+npm run affected:test      # Test only affected projects
+npm run affected:lint      # Lint only affected projects
+
+# View dependency graph
+npm run graph
 ```
 
 ### Docker (Local Testing)
+
 ```bash
-npm run docker:build     # Build Docker image
-npm run docker:run       # Run container on http://localhost:8080
-npm run docker:build-run # Build and run in sequence
+npm run docker:build-frontend    # Build frontend image
+npm run docker:build-backend     # Build backend image
+npm run docker:build-all         # Build both images
 ```
 
-### Google Cloud Platform Deployment
+### Nx-Specific Commands
+
 ```bash
-npm run gcp:build        # Build and push to GCR (update PROJECT_ID first)
-npm run gcp:deploy       # Deploy to Cloud Run (update PROJECT_ID first)
+# Run target for specific project
+npx nx [target] [project]
+# Examples:
+npx nx serve frontend
+npx nx build backend
+npx nx test shared
+
+# Run target for all projects
+npx nx run-many -t [target] --all
+# Examples:
+npx nx run-many -t build --all
+npx nx run-many -t test --all
+
+# Run target for affected projects only
+npx nx affected -t [target]
+# Examples:
+npx nx affected -t build
+npx nx affected -t test --base=origin/main
+
+# View project graph
+npx nx graph
 ```
 
-Note: Replace `PROJECT_ID` in package.json scripts with your actual GCP project ID before using these commands.
+Note: When making changes, Nx will automatically determine which projects are affected and only rebuild/retest those projects, saving significant time.
 
 ## Architecture
 
-### Frontend Stack
+### Frontend Stack (`apps/frontend`)
 - **Framework**: Angular 21 with standalone components (no NgModules)
 - **Routing**: File-based routing via `src/app.routes.ts`
 - **Build Tool**: Vite (via @angular/build)
 - **Styling**: Tailwind CSS
 - **Rich Text Editor**: EditorJS with multiple plugins (header, list, image, quote, code, table, embed, link)
+
+### Backend Stack (`apps/backend`)
+- **Framework**: Express.js
+- **Runtime**: Node.js 20
+- **Build**: TypeScript compiler
+- **Database Client**: Supabase JS client
+- **Middleware**: CORS, Helmet, Morgan, Express Validator
+
+### Shared Library (`libs/shared`)
+- **Purpose**: Common TypeScript types and utilities shared between frontend and backend
+- **Build**: TypeScript compiler
+- **Exports**: Type definitions, interfaces, constants
 
 ### Backend (Supabase)
 - **Database**: PostgreSQL with Row Level Security (RLS)
@@ -48,14 +120,14 @@ Note: Replace `PROJECT_ID` in package.json scripts with your actual GCP project 
 - **Authentication**: Supabase Auth (email/password)
 - **Security**: Public read access for published content; authenticated write/update/delete
 
-### Key Services
-1. **SupabaseService** (`src/services/supabase.service.ts`): Core Supabase client initialization, image upload/delete
-2. **AuthService** (`src/services/auth.service.ts`): Authentication state management using Angular signals
-3. **DataService** (`src/services/data.service.ts`): CRUD operations for projects and blog posts
-4. **EditorJSService** (`src/services/editorjs.service.ts`): Rich text editor configuration with Supabase image uploads
-5. **ThemeService** (`src/services/theme.service.ts`): Dark/light mode management
+### Key Services (Frontend)
+1. **SupabaseService** (`apps/frontend/src/services/supabase.service.ts`): Core Supabase client initialization, image upload/delete
+2. **AuthService** (`apps/frontend/src/services/auth.service.ts`): Authentication state management using Angular signals
+3. **DataService** (`apps/frontend/src/services/data.service.ts`): CRUD operations for projects and blog posts
+4. **EditorJSService** (`apps/frontend/src/services/editorjs.service.ts`): Rich text editor configuration with Supabase image uploads
+5. **ThemeService** (`apps/frontend/src/services/theme.service.ts`): Dark/light mode management
 
-### Route Structure
+### Route Structure (Frontend)
 ```
 /                        # Home page
 /projects                # Projects list
@@ -76,6 +148,15 @@ Note: Replace `PROJECT_ID` in package.json scripts with your actual GCP project 
   /admin/blog/edit/:id   # Edit blog post
 ```
 
+### API Routes (Backend)
+```
+GET  /api/health         # Health check
+GET  /api/projects       # List all published projects
+GET  /api/projects/:id   # Get project by ID/slug
+GET  /api/blog           # List all published blog posts
+GET  /api/blog/:id       # Get blog post by ID/slug
+```
+
 ## Database Schema
 
 ### projects table
@@ -89,12 +170,12 @@ Note: Replace `PROJECT_ID` in package.json scripts with your actual GCP project 
 - `gallery_images` (text array), `published` (boolean), `created_at`, `updated_at`
 
 ### Content Field Format
-Both `projects.content` and `blog_posts.content` use **EditorJS OutputData format** (JSON). When displaying, use the BlockRendererComponent (`src/components/block-renderer.component.ts`) to render EditorJS blocks as HTML.
+Both `projects.content` and `blog_posts.content` use **EditorJS OutputData format** (JSON). When displaying, use the BlockRendererComponent (`apps/frontend/src/components/block-renderer.component.ts`) to render EditorJS blocks as HTML.
 
 ## Environment Configuration
 
-### Development
-Edit `src/environments/environment.ts`:
+### Frontend Development
+Edit `apps/frontend/src/environments/environment.ts`:
 ```typescript
 export const environment = {
   production: false,
@@ -103,14 +184,26 @@ export const environment = {
 };
 ```
 
-### Production
-Edit `src/environments/environment.prod.ts` with the same structure.
+### Frontend Production
+Edit `apps/frontend/src/environments/environment.prod.ts` with the same structure.
 
-For **Docker builds**, the Dockerfile replaces placeholders using `sed` with build arguments:
+### Backend Development
+Create `apps/backend/.env`:
+```env
+NODE_ENV=development
+PORT=3001
+SUPABASE_URL=YOUR_SUPABASE_URL
+SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+FRONTEND_URL=http://localhost:3000
+```
+
+### Docker Builds
+Dockerfiles use build arguments to inject environment variables:
 ```dockerfile
 ARG SUPABASE_URL
 ARG SUPABASE_ANON_KEY
-RUN sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" src/environments/environment.prod.ts
+RUN sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" apps/frontend/src/environments/environment.prod.ts
 ```
 
 ## Supabase Setup
@@ -139,19 +232,37 @@ RUN sed -i "s|YOUR_SUPABASE_URL|${SUPABASE_URL}|g" src/environments/environment.
 Set these at `Settings > Secrets and variables > Actions`:
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_ANON_KEY`: Your Supabase anon key
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key (backend only)
 - `GCP_PROJECT_ID`: Google Cloud project ID
 - `GCP_SA_KEY`: Service account JSON key (for GCR and Cloud Run)
+- `BACKEND_API_URL`: Backend URL for frontend to connect to
+- `FRONTEND_URL`: Frontend URL for backend CORS
 
 ### Workflows
-- `.github/workflows/deploy.yml`: Auto-deploy to Cloud Run on push to `main`
-- `.github/workflows/pr-validation.yml`: Validate Docker build on PRs
+- `.github/workflows/deploy-frontend.yml`: Auto-deploy frontend to Cloud Run on push to `main` (only when `apps/frontend/**` or `libs/shared/**` changes)
+- `.github/workflows/deploy-backend.yml`: Auto-deploy backend to Cloud Run on push to `main` (only when `apps/backend/**` or `libs/shared/**` changes)
+- `.github/workflows/pr-validation.yml`: Run Nx affected builds/tests/lints on PRs
+
+All workflows use Nx affected commands to optimize build times by only building/testing changed projects.
 
 ## Common Development Patterns
 
-### Adding a New Admin Page
-1. Create component in `src/pages/admin/`
-2. Add route to `src/app.routes.ts` under the admin children array
-3. Ensure route uses `canActivate: [authGuard]` (inherited from parent)
+### Adding a New Frontend Page
+1. Create component in `apps/frontend/src/pages/`
+2. Add route to `apps/frontend/src/app.routes.ts`
+3. Ensure route uses `canActivate: [authGuard]` if admin-only
+
+### Adding a New Backend Endpoint
+1. Create route handler in `apps/backend/src/routes/`
+2. Register route in `apps/backend/src/server.ts`
+3. Add middleware as needed (auth, validation, etc.)
+
+### Working with Shared Types
+1. Define types in `libs/shared/src/types/`
+2. Export from `libs/shared/src/index.ts`
+3. Import in frontend: `import { Type } from '@meetjoshi/shared'`
+4. Import in backend: `import { Type } from '@meetjoshi/shared'`
+5. Run `npm run build:shared` to rebuild after changes
 
 ### Working with EditorJS Content
 - **Creating/Editing**: Use `EditorJSService.createEditorConfig()` to initialize editor
@@ -168,20 +279,66 @@ Set these at `Settings > Secrets and variables > Actions`:
 - Slugs must be unique (enforced by database constraint)
 - DataService queries by slug: `getProjectBySlug(slug)`, `getBlogPostBySlug(slug)`
 
+## Nx Project Configuration
+
+Each project has a `project.json` file that defines:
+- **name**: Project identifier
+- **targets**: Available commands (build, serve, test, lint)
+- **tags**: Organizational tags (type:app, type:lib, scope:frontend, etc.)
+
+Example target configuration:
+```json
+{
+  "build": {
+    "executor": "@nx/vite:build",
+    "outputs": ["{options.outputPath}"],
+    "options": {
+      "outputPath": "apps/frontend/dist"
+    }
+  }
+}
+```
+
+Nx uses these configurations to:
+1. Determine build order based on dependencies
+2. Cache build outputs for unchanged projects
+3. Run only affected projects when using affected commands
+
 ## Deployment Architecture
 
 ### Local Development
-Angular dev server → Supabase (via environment.ts credentials)
+- Frontend dev server (http://localhost:3000) → Supabase
+- Backend dev server (http://localhost:3001) → Supabase
+- Both use environment-specific configurations
 
 ### Production (Cloud Run)
 1. GitHub Actions triggered by push to `main`
-2. Docker build with Supabase credentials injected via build args
-3. Image pushed to Google Container Registry
-4. Deployed to Cloud Run with NGINX serving static Angular build
-5. Cloud Run URL: `https://meetjoshi-portfolio-xxxxx-uc.a.run.app`
+2. Nx determines which projects are affected
+3. Docker builds only for affected apps
+4. Images pushed to Google Container Registry
+5. Deployed to Cloud Run with NGINX (frontend) or Node.js (backend)
+6. Frontend URL: `https://meetjoshi-frontend-xxxxx-uc.a.run.app`
+7. Backend URL: `https://meetjoshi-backend-xxxxx-uc.a.run.app`
 
-### Docker Container
+### Docker Containers
+
+#### Frontend
 - Base: `node:20-alpine` (build stage), `nginx:alpine` (runtime)
-- Angular build output → `/usr/share/nginx/html`
-- NGINX config: `nginx.conf` (SPA routing fallback to index.html)
+- Build: Nx builds shared lib, then frontend with Vite
+- Runtime: NGINX serves static Angular build
 - Port: 8080
+
+#### Backend
+- Base: `node:20-alpine` (build and runtime)
+- Build: Nx builds shared lib, then backend with tsc
+- Runtime: Node.js runs compiled Express server
+- Port: 8080
+
+## Nx Benefits for This Project
+
+1. **Smart Builds**: When you change only the backend, frontend doesn't rebuild
+2. **Shared Code**: `libs/shared` provides type safety across frontend and backend
+3. **Task Dependencies**: Shared lib always builds before apps that depend on it
+4. **Caching**: Build results are cached and reused when code hasn't changed
+5. **Affected Commands**: CI only tests/builds projects affected by PR changes
+6. **Visualization**: `npm run graph` shows project dependencies visually

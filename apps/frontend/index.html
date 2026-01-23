@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Meet Joshi</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Tailwind CSS with Typography Plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Hashnode CDN Preconnect -->
+  <link rel="preconnect" href="https://cdn.hashnode.com">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            paper: '#FFFEFA', // Brighter, cleaner warm white
+            surface: '#FDFBF6', // Subtle separation
+            gold: {
+              50: '#FFFBEB',
+              100: '#FEF3C7',
+              200: '#FDE68A',
+              300: '#FCD34D',
+              400: '#FBBF24',
+              500: '#F59E0B', // Vibrant Amber Gold
+              600: '#D97706', // Rich Deep Gold
+              700: '#B45309',
+              800: '#92400E',
+              900: '#78350F',
+              950: '#451A03',
+            }
+          },
+          typography: (theme) => ({
+            DEFAULT: {
+              css: {
+                color: theme('colors.stone.600'),
+                h1: { fontFamily: theme('fontFamily.serif') },
+                h2: { fontFamily: theme('fontFamily.serif') },
+                h3: { fontFamily: theme('fontFamily.serif') },
+                h4: { fontFamily: theme('fontFamily.serif') },
+                '--tw-prose-body': theme('colors.stone.600'),
+                '--tw-prose-headings': theme('colors.stone.900'),
+                '--tw-prose-links': theme('colors.gold.600'),
+                '--tw-prose-links-hover': theme('colors.gold.500'),
+              },
+            },
+          }),
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dcd9d0;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c2baa6;
+    }
+    body {
+      background-color: #FFFEFA;
+    }
+
+    /* EditorJS Styles */
+    .codex-editor {
+      font-family: inherit;
+    }
+    .codex-editor__redactor {
+      padding-bottom: 150px !important;
+    }
+    .ce-block__content,
+    .ce-toolbar__content {
+      max-width: 100%;
+    }
+    .ce-toolbar__plus {
+      color: #D97706;
+    }
+    .ce-toolbar__plus:hover {
+      background-color: #FEF3C7;
+    }
+    .ce-inline-toolbar,
+    .ce-conversion-toolbar,
+    .ce-settings {
+      background-color: #1C1917;
+      border: 1px solid #44403C;
+      color: #FAFAF9;
+    }
+    .ce-inline-tool,
+    .ce-conversion-tool,
+    .ce-settings__button {
+      color: #FAFAF9;
+    }
+    .ce-inline-tool:hover,
+    .ce-conversion-tool:hover,
+    .ce-settings__button:hover {
+      background-color: #44403C;
+    }
+    .ce-popover {
+      background-color: #1C1917;
+      border: 1px solid #44403C;
+    }
+    .ce-popover__item {
+      color: #FAFAF9;
+    }
+    .ce-popover__item:hover {
+      background-color: #44403C;
+    }
+    .ce-code__textarea {
+      background-color: #1C1917 !important;
+      color: #FAFAF9 !important;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      border-radius: 0.5rem;
+      padding: 1rem !important;
+      min-height: 200px;
+    }
+    .cdx-quote {
+      border-left: 4px solid #D97706;
+      padding-left: 1.5rem;
+      font-style: italic;
+    }
+    .ce-delimiter::before {
+      content: '***';
+      display: inline-block;
+      font-size: 30px;
+      color: #D6D3D1;
+      letter-spacing: 0.2em;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^21.0.6?external=rxjs",
+    "@angular/compiler": "https://esm.sh/@angular/compiler@^21.0.6?external=rxjs",
+    "@angular/core": "https://esm.sh/@angular/core@^21.0.6?external=rxjs",
+    "@angular/common": "https://esm.sh/@angular/common@^21.0.6?external=rxjs",
+    "@angular/forms": "https://esm.sh/@angular/forms@^21.0.6?external=rxjs",
+    "@angular/router": "https://esm.sh/@angular/router@^21.0.6?external=rxjs",
+    "@angular/common/http": "https://esm.sh/@angular/common@^21.0.6/http?external=rxjs",
+    "@angular/core/rxjs-interop": "https://esm.sh/@angular/core@^21.0.6/rxjs-interop?external=rxjs",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.89.0"
+  }
+}
+</script>
+</head>
+<body class="bg-paper text-stone-800 antialiased selection:bg-gold-200 selection:text-gold-900">
+  <app-root></app-root>
+</body>
+</html>
