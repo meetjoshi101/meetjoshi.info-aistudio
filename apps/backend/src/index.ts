@@ -6,6 +6,11 @@ import { corsOptions } from './config/cors.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import routes from './routes/index.js';
 
+/**
+ * Create and configure an Express application with security, logging, body parsing, routes, a root info endpoint, and centralized error handling.
+ *
+ * @returns An Express application instance configured with Helmet security headers, CORS (using configured options), morgan request logging, JSON and URL-encoded body parsing (10 MB limit), API routes mounted at `/api`, a root `GET /` endpoint returning basic metadata, and the centralized error handler registered last.
+ */
 export function createApp() {
   const app = express();
 

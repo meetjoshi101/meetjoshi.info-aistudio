@@ -8,6 +8,15 @@ export interface AuthRequest extends Request {
   };
 }
 
+/**
+ * Express middleware that validates a Bearer Supabase session token and attaches the authenticated user to the request.
+ *
+ * If the Authorization header is missing or does not contain a valid Bearer token, the middleware responds with HTTP 401.
+ * If Supabase token verification fails, the middleware responds with HTTP 401. On unexpected errors it responds with HTTP 500.
+ * On success the middleware sets `req.user` to an object with `id` and `email` (email will be an empty string if not provided) and calls `next()`.
+ *
+ * @param req - The incoming AuthRequest; on successful authentication `req.user` is populated with `{ id, email }`.
+ */
 export async function authMiddleware(
   req: AuthRequest,
   res: Response,
