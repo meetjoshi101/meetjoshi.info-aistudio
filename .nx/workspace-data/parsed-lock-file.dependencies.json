@@ -8420,6 +8420,11 @@
     "type": "static"
   },
   {
+    "source": "npm:@paralleldrive/cuid2",
+    "target": "npm:@noble/hashes",
+    "type": "static"
+  },
+  {
     "source": "npm:@parcel/watcher",
     "target": "npm:detect-libc@1.0.3",
     "type": "static"
@@ -10102,6 +10107,36 @@
   {
     "source": "npm:@types/sockjs",
     "target": "npm:@types/node",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/superagent",
+    "target": "npm:@types/cookiejar",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/superagent",
+    "target": "npm:@types/methods",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/superagent",
+    "target": "npm:@types/node",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/superagent",
+    "target": "npm:form-data",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/supertest",
+    "target": "npm:@types/methods",
+    "type": "static"
+  },
+  {
+    "source": "npm:@types/supertest",
+    "target": "npm:@types/superagent",
     "type": "static"
   },
   {
@@ -12425,6 +12460,16 @@
     "type": "static"
   },
   {
+    "source": "npm:dezalgo",
+    "target": "npm:asap",
+    "type": "static"
+  },
+  {
+    "source": "npm:dezalgo",
+    "target": "npm:wrappy",
+    "type": "static"
+  },
+  {
     "source": "npm:dir-glob",
     "target": "npm:path-type",
     "type": "static"
@@ -13607,6 +13652,21 @@
   {
     "source": "npm:mime-types@2.1.35",
     "target": "npm:mime-db@1.52.0",
+    "type": "static"
+  },
+  {
+    "source": "npm:formidable",
+    "target": "npm:@paralleldrive/cuid2",
+    "type": "static"
+  },
+  {
+    "source": "npm:formidable",
+    "target": "npm:dezalgo",
+    "type": "static"
+  },
+  {
+    "source": "npm:formidable",
+    "target": "npm:once",
     "type": "static"
   },
   {
@@ -19862,6 +19922,66 @@
   {
     "source": "npm:stylehacks",
     "target": "npm:postcss-selector-parser",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:component-emitter",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:cookiejar",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:debug",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:fast-safe-stringify",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:form-data",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:formidable",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:methods",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:mime@2.6.0",
+    "type": "static"
+  },
+  {
+    "source": "npm:superagent",
+    "target": "npm:qs",
+    "type": "static"
+  },
+  {
+    "source": "npm:supertest",
+    "target": "npm:cookie-signature",
+    "type": "static"
+  },
+  {
+    "source": "npm:supertest",
+    "target": "npm:methods",
+    "type": "static"
+  },
+  {
+    "source": "npm:supertest",
+    "target": "npm:superagent",
     "type": "static"
   },
   {
