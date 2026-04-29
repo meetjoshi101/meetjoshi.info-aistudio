@@ -106,7 +106,7 @@ You should see 2 projects and 2 blog posts.
 
 ### Step 1: Update Environment Files
 
-Edit `src/environments/environment.ts`:
+Edit `apps/frontend/src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
@@ -116,7 +116,7 @@ export const environment = {
 };
 ```
 
-Edit `src/environments/environment.prod.ts` with the same values.
+Edit `apps/frontend/src/environments/environment.prod.ts` with the same values.
 
 ### Step 2: Test Locally
 
