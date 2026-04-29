@@ -142,15 +142,16 @@ npm run dev
 ### Step 1: Build Docker Image Locally
 
 ```bash
-npm run docker:build
+npm run docker:build-frontend
+npm run docker:build-backend
 ```
 
-This creates a Docker image named `meetjoshi-portfolio:latest`.
+This creates Docker images named `meetjoshi-frontend:latest` and `meetjoshi-backend:latest`.
 
 ### Step 2: Test Docker Container Locally
 
 ```bash
-npm run docker:run
+docker run --rm -p 8080:80 meetjoshi-frontend:latest
 ```
 
 Open browser to `http://localhost:8080` and verify the app works.
@@ -194,16 +195,16 @@ gcloud auth configure-docker
 **Option A: Using Cloud Build (Recommended)**
 ```bash
 # Replace PROJECT_ID with your actual project ID
-gcloud builds submit --tag gcr.io/meetjoshi-portfolio/meetjoshi-portfolio
+gcloud builds submit --tag gcr.io/meetjoshi-portfolio/meetjoshi-frontend --file apps/frontend/Dockerfile .
 ```
 
 **Option B: Build locally and push**
 ```bash
 # Build for GCR
-docker build -t gcr.io/meetjoshi-portfolio/meetjoshi-portfolio:latest .
+docker build -f apps/frontend/Dockerfile -t gcr.io/meetjoshi-portfolio/meetjoshi-frontend:latest .
 
 # Push to GCR
-docker push gcr.io/meetjoshi-portfolio/meetjoshi-portfolio:latest
+docker push gcr.io/meetjoshi-portfolio/meetjoshi-frontend:latest
 ```
 
 ### Step 4: Deploy to Cloud Run
@@ -212,7 +213,7 @@ docker push gcr.io/meetjoshi-portfolio/meetjoshi-portfolio:latest
 
 ```bash
 gcloud run deploy meetjoshi-portfolio \
-  --image gcr.io/meetjoshi-portfolio/meetjoshi-portfolio:latest \
+  --image gcr.io/meetjoshi-portfolio/meetjoshi-frontend:latest \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
@@ -379,7 +380,8 @@ Check for TypeScript errors or missing dependencies.
 # Local development
 npm run dev                    # Start dev server
 npm run build:prod             # Production build
-npm run docker:build-run       # Build and run in Docker
+npm run docker:build-frontend # Build frontend Docker image
+docker run --rm -p 8080:80 meetjoshi-frontend:latest
 
 # Docker operations
 docker ps                      # List running containers
