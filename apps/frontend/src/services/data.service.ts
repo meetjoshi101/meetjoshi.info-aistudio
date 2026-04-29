@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, map, catchError, of, firstValueFrom } from 'rxjs';
 import { ApiService } from './api.service';
 import { Project, BlogPost, CreateProjectDto, UpdateProjectDto, CreateBlogPostDto, UpdateBlogPostDto } from '@meetjoshi/shared';
 
@@ -103,7 +103,8 @@ export class DataService {
         published: project.published ?? true
       };
 
-      return await this.apiService.post<Project>('/projects/admin', dto, true).toPromise() || null;
+      const createdProject = await firstValueFrom(this.apiService.post<Project>('/projects/admin', dto, true));
+      return createdProject;
     } catch (error) {
       console.error('Error creating project:', error);
       return null;
@@ -127,7 +128,8 @@ export class DataService {
       if (updates.content !== undefined) dto.content = updates.content;
       if (updates.published !== undefined) dto.published = updates.published;
 
-      return await this.apiService.put<Project>(`/projects/admin/${slug}`, dto, true).toPromise() || null;
+      const updatedProject = await firstValueFrom(this.apiService.put<Project>(`/projects/admin/${slug}`, dto, true));
+      return updatedProject;
     } catch (error) {
       console.error('Error updating project:', error);
       return null;
@@ -136,7 +138,7 @@ export class DataService {
 
   async deleteProject(slug: string): Promise<boolean> {
     try {
-      await this.apiService.delete<{ success: boolean }>(`/projects/admin/${slug}`, true).toPromise();
+      await firstValueFrom(this.apiService.delete<{ success: boolean }>(`/projects/admin/${slug}`, true));
       return true;
     } catch (error) {
       console.error('Error deleting project:', error);
@@ -160,7 +162,8 @@ export class DataService {
         published: post.published ?? true
       };
 
-      return await this.apiService.post<BlogPost>('/blog/admin', dto, true).toPromise() || null;
+      const createdBlogPost = await firstValueFrom(this.apiService.post<BlogPost>('/blog/admin', dto, true));
+      return createdBlogPost;
     } catch (error) {
       console.error('Error creating blog post:', error);
       return null;
@@ -182,7 +185,8 @@ export class DataService {
       if (updates.galleryImages !== undefined) dto.galleryImages = updates.galleryImages;
       if (updates.published !== undefined) dto.published = updates.published;
 
-      return await this.apiService.put<BlogPost>(`/blog/admin/${slug}`, dto, true).toPromise() || null;
+      const updatedBlogPost = await firstValueFrom(this.apiService.put<BlogPost>(`/blog/admin/${slug}`, dto, true));
+      return updatedBlogPost;
     } catch (error) {
       console.error('Error updating blog post:', error);
       return null;
@@ -191,7 +195,7 @@ export class DataService {
 
   async deleteBlogPost(slug: string): Promise<boolean> {
     try {
-      await this.apiService.delete<{ success: boolean }>(`/blog/admin/${slug}`, true).toPromise();
+      await firstValueFrom(this.apiService.delete<{ success: boolean }>(`/blog/admin/${slug}`, true));
       return true;
     } catch (error) {
       console.error('Error deleting blog post:', error);

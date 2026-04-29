@@ -1,23 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+async function gotoAdminLogin(page: Page): Promise<void> {
+  await page.goto('/#/admin/login');
+  await expect(page.locator('h2').filter({ hasText: /admin.*login/i })).toBeVisible({ timeout: 10000 });
+}
 
 test.describe('Admin Panel', () => {
   test('should display admin login page', async ({ page }) => {
-    // Navigate using hash routing
-    await page.goto('/#/admin/login');
-
-    // Wait for the page to load
-    await page.waitForSelector('app-root', { timeout: 10000 });
-
-    // Check for login heading - be more flexible
-    const heading = page.locator('h2').filter({ hasText: /admin.*login/i });
-    await expect(heading).toBeVisible({ timeout: 10000 });
+    await gotoAdminLogin(page);
   });
 
   test('should have email and password inputs', async ({ page }) => {
-    await page.goto('/#/admin/login');
-
-    // Wait for form to load
-    await page.waitForTimeout(2000);
+    await gotoAdminLogin(page);
 
     // Check for email input
     const emailInput = page.locator('input[type="email"]').or(page.locator('input[id*="email"]'));
@@ -33,10 +27,7 @@ test.describe('Admin Panel', () => {
   });
 
   test('should show validation errors for empty form', async ({ page }) => {
-    await page.goto('/#/admin/login');
-
-    // Wait for form to load
-    await page.waitForTimeout(2000);
+    await gotoAdminLogin(page);
 
     // Find and click the submit button
     const submitButton = page.locator('button[type="submit"]').first();
@@ -52,10 +43,7 @@ test.describe('Admin Panel', () => {
   });
 
   test('should show error for invalid credentials', async ({ page }) => {
-    await page.goto('/#/admin/login');
-
-    // Wait for form to load
-    await page.waitForTimeout(2000);
+    await gotoAdminLogin(page);
 
     // Fill in with invalid credentials
     await page.locator('input[type="email"]').first().fill('invalid@example.com');
@@ -64,22 +52,15 @@ test.describe('Admin Panel', () => {
     // Submit the form
     await page.locator('button[type="submit"]').first().click();
 
-    // Wait a bit for API call
-    await page.waitForTimeout(3000);
-
-    // Check for error message (either visible error or still on login page)
-    const isOnLoginPage = page.url().includes('#/admin/login');
-    expect(isOnLoginPage).toBeTruthy();
+    // API failure should keep user on login route
+    await expect(page).toHaveURL(/#\/admin\/login/, { timeout: 10000 });
   });
 
   test('should redirect unauthenticated users from admin dashboard', async ({ page }) => {
     // Try to access admin dashboard directly without authentication
     await page.goto('/#/admin');
 
-    // Wait for redirect
-    await page.waitForTimeout(2000);
-
     // Should be redirected to login
-    expect(page.url()).toContain('#/admin/login');
+    await expect(page).toHaveURL(/#\/admin\/login/, { timeout: 10000 });
   });
 });
