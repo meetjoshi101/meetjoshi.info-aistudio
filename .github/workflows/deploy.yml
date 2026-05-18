@@ -8,6 +8,7 @@ on:
 
 env:
   DEPLOY_PATH: /opt/meetjoshi-portfolio
+  APP_SUBDIR: apps/frontend
 
 jobs:
   deploy:
@@ -66,6 +67,8 @@ jobs:
             git checkout main
             git reset --hard origin/main
 
+            cd "${{ env.APP_SUBDIR }}"
+
             docker build \
               --build-arg SUPABASE_URL="$SUPABASE_URL" \
               --build-arg SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
@@ -89,6 +92,7 @@ jobs:
           echo "**Target:** DigitalOcean Droplet" >> $GITHUB_STEP_SUMMARY
           echo "**Host:** ${{ secrets.DROPLET_HOST }}" >> $GITHUB_STEP_SUMMARY
           echo "**Path:** ${{ env.DEPLOY_PATH }}" >> $GITHUB_STEP_SUMMARY
+          echo "**App Directory:** ${{ env.APP_SUBDIR }}" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Notify deployment status
