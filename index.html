@@ -77,73 +77,6 @@
     body {
       background-color: #FFFEFA;
     }
-
-    /* EditorJS Styles */
-    .codex-editor {
-      font-family: inherit;
-    }
-    .codex-editor__redactor {
-      padding-bottom: 150px !important;
-    }
-    .ce-block__content,
-    .ce-toolbar__content {
-      max-width: 100%;
-    }
-    .ce-toolbar__plus {
-      color: #D97706;
-    }
-    .ce-toolbar__plus:hover {
-      background-color: #FEF3C7;
-    }
-    .ce-inline-toolbar,
-    .ce-conversion-toolbar,
-    .ce-settings {
-      background-color: #1C1917;
-      border: 1px solid #44403C;
-      color: #FAFAF9;
-    }
-    .ce-inline-tool,
-    .ce-conversion-tool,
-    .ce-settings__button {
-      color: #FAFAF9;
-    }
-    .ce-inline-tool:hover,
-    .ce-conversion-tool:hover,
-    .ce-settings__button:hover {
-      background-color: #44403C;
-    }
-    .ce-popover {
-      background-color: #1C1917;
-      border: 1px solid #44403C;
-    }
-    .ce-popover__item {
-      color: #FAFAF9;
-    }
-    .ce-popover__item:hover {
-      background-color: #44403C;
-    }
-    .ce-code__textarea {
-      background-color: #1C1917 !important;
-      color: #FAFAF9 !important;
-      font-family: 'Courier New', monospace;
-      font-size: 0.875rem;
-      line-height: 1.5;
-      border-radius: 0.5rem;
-      padding: 1rem !important;
-      min-height: 200px;
-    }
-    .cdx-quote {
-      border-left: 4px solid #D97706;
-      padding-left: 1.5rem;
-      font-style: italic;
-    }
-    .ce-delimiter::before {
-      content: '***';
-      display: inline-block;
-      font-size: 30px;
-      color: #D6D3D1;
-      letter-spacing: 0.2em;
-    }
   </style>
 <script type="importmap">
 {
@@ -161,11 +94,11 @@
     "@angular/forms": "https://esm.sh/@angular/forms@^21.0.6?external=rxjs",
     "@angular/router": "https://esm.sh/@angular/router@^21.0.6?external=rxjs",
     "@angular/common/http": "https://esm.sh/@angular/common@^21.0.6/http?external=rxjs",
-    "@angular/core/rxjs-interop": "https://esm.sh/@angular/core@^21.0.6/rxjs-interop?external=rxjs",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.89.0"
+    "@angular/core/rxjs-interop": "https://esm.sh/@angular/core@^21.0.6/rxjs-interop?external=rxjs"
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-paper text-stone-800 antialiased selection:bg-gold-200 selection:text-gold-900">
   <app-root></app-root>
