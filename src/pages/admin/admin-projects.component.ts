@@ -20,36 +20,180 @@ import { DatePipe } from '@angular/common';
       </header>
 
       @if (isEditing) {
-        <div class="bg-white p-8 border border-stone-200 rounded shadow-sm mb-12">
-           <h2 class="text-xl font-serif font-bold mb-6 border-b border-stone-100 pb-4">{{ editingId ? 'Edit Project' : 'Create Project' }}</h2>
+        <div class="bg-white border border-stone-200 rounded-xl shadow-sm mb-12 overflow-hidden">
+           <div class="p-6 md:p-8 bg-stone-50 border-b border-stone-200">
+             <h2 class="text-xl font-serif font-bold text-stone-900">{{ editingId ? 'Edit Project' : 'Create Project' }}</h2>
+             <p class="text-sm font-mono text-stone-500 mt-1">Fill in the project details below. Required fields are marked with an asterisk (*).</p>
+           </div>
            
-           <div class="grid grid-cols-2 gap-6 mb-6">
-             <div>
-               <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Title *</label>
-               <input [(ngModel)]="draft.title" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans">
-             </div>
-             <div>
-               <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Category *</label>
-               <input [(ngModel)]="draft.category" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans">
-             </div>
-             <div>
-               <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Slug/ID * (alphanumeric, no spaces)</label>
-               <input [(ngModel)]="draft.id" [disabled]="!!editingId" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none disabled:opacity-50 font-mono">
-             </div>
-             <div>
-               <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Image URL *</label>
-               <input [(ngModel)]="draft.imageUrl" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans">
-             </div>
+           <div class="p-6 md:p-8 space-y-12">
+             <!-- Basic Information -->
+             <section>
+               <h3 class="text-sm font-bold font-sans uppercase tracking-widest text-stone-900 mb-6 flex items-center gap-2">
+                 <mat-icon class="text-gold-500 text-sm w-4 h-4" style="font-size: 16px;">info</mat-icon> Core Details
+               </h3>
+               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Title *</label>
+                   <input [(ngModel)]="draft.title" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Category/Service *</label>
+                   <input [(ngModel)]="draft.category" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Slug/ID *</label>
+                   <input [(ngModel)]="draft.id" [disabled]="!!editingId" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none disabled:opacity-50 font-mono rounded-md">
+                 </div>
+                 <div class="md:col-span-2">
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Image URL *</label>
+                   <input [(ngModel)]="draft.imageUrl" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">External Link</label>
+                   <input [(ngModel)]="draft.link" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+               </div>
+             </section>
+
+             <hr class="border-stone-100">
+
+             <!-- Project Metadata -->
+             <section>
+               <h3 class="text-sm font-bold font-sans uppercase tracking-widest text-stone-900 mb-6 flex items-center gap-2">
+                 <mat-icon class="text-gold-500 text-sm w-4 h-4" style="font-size: 16px;">work</mat-icon> Meta Data
+               </h3>
+               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Client</label>
+                   <input [(ngModel)]="draft.client" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Industry</label>
+                   <input [(ngModel)]="draft.industry" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Role</label>
+                   <input [(ngModel)]="draft.role" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Duration</label>
+                   <input [(ngModel)]="draft.duration" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                 </div>
+               </div>
+             </section>
+
+             <hr class="border-stone-100">
+
+             <!-- Summary & Overview -->
+             <section>
+               <h3 class="text-sm font-bold font-sans uppercase tracking-widest text-stone-900 mb-6 flex items-center gap-2">
+                 <mat-icon class="text-gold-500 text-sm w-4 h-4" style="font-size: 16px;">article</mat-icon> Summary & Overview
+               </h3>
+               <div class="space-y-6">
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Short Description *</label>
+                   <textarea [(ngModel)]="draft.description" rows="2" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Detailed Overview</label>
+                   <textarea [(ngModel)]="draft.overview" rows="4" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                 </div>
+                 <div>
+                   <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Key Learning / Impact Quote</label>
+                   <textarea [(ngModel)]="draft.keyLearning" rows="2" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans text-lg font-serif rounded-md placeholder-stone-400" placeholder="A standout quote or learning..."></textarea>
+                 </div>
+               </div>
+             </section>
+
+             <hr class="border-stone-100">
+
+             <!-- Deep Dive / Case Study Details -->
+             <section>
+               <h3 class="text-sm font-bold font-sans uppercase tracking-widest text-stone-900 mb-6 flex items-center gap-2">
+                 <mat-icon class="text-gold-500 text-sm w-4 h-4" style="font-size: 16px;">library_books</mat-icon> Deep Dive Details
+               </h3>
+               
+               <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                 <!-- Problem -->
+                 <div class="p-5 border border-stone-200 rounded-lg bg-stone-50/50">
+                   <h4 class="text-base font-serif font-bold text-stone-900 mb-4">1. The Problem</h4>
+                   <div class="space-y-4">
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Story/Text</label>
+                       <textarea [(ngModel)]="draft.challenge" rows="3" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                     </div>
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Bullet Points (Comma separated)</label>
+                       <input [ngModel]="draft.problemList?.join(', ')" (ngModelChange)="updateList('problemList', $event)" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                     </div>
+                   </div>
+                 </div>
+
+                 <!-- Solution -->
+                 <div class="p-5 border border-stone-200 rounded-lg bg-stone-50/50">
+                   <h4 class="text-base font-serif font-bold text-stone-900 mb-4">2. The Solution</h4>
+                   <div class="space-y-4">
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Story/Text</label>
+                       <textarea [(ngModel)]="draft.solution" rows="3" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                     </div>
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Bullet Points (Comma separated)</label>
+                       <input [ngModel]="draft.solutionList?.join(', ')" (ngModelChange)="updateList('solutionList', $event)" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                     </div>
+                   </div>
+                 </div>
+
+                 <!-- Contribution -->
+                 <div class="p-5 border border-stone-200 rounded-lg bg-stone-50/50">
+                   <h4 class="text-base font-serif font-bold text-stone-900 mb-4">3. My Contribution</h4>
+                   <div class="space-y-4">
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Story/Text</label>
+                       <textarea [(ngModel)]="draft.contribution" rows="3" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                     </div>
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Bullet Points (Comma separated)</label>
+                       <input [ngModel]="draft.contributionList?.join(', ')" (ngModelChange)="updateList('contributionList', $event)" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                     </div>
+                   </div>
+                 </div>
+
+                 <!-- Outcome -->
+                 <div class="p-5 border border-stone-200 rounded-lg bg-stone-50/50">
+                   <h4 class="text-base font-serif font-bold text-stone-900 mb-4">4. Outcome</h4>
+                   <div class="space-y-4">
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Story/Text</label>
+                       <textarea [(ngModel)]="draft.outcome" rows="3" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md"></textarea>
+                     </div>
+                     <div>
+                       <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Bullet Points (Comma separated)</label>
+                       <input [ngModel]="draft.outcomeList?.join(', ')" (ngModelChange)="updateList('outcomeList', $event)" class="w-full border border-stone-200 p-3 bg-white focus:outline-none focus:border-stone-900 font-sans rounded-md">
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </section>
+
+             <hr class="border-stone-100">
+
+             <!-- Technologies -->
+             <section>
+               <h3 class="text-sm font-bold font-sans uppercase tracking-widest text-stone-900 mb-6 flex items-center gap-2">
+                 <mat-icon class="text-gold-500 text-sm w-4 h-4" style="font-size: 16px;">code</mat-icon> Technologies Stack
+               </h3>
+               <div>
+                 <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Technologies (Comma separated)</label>
+                 <input [ngModel]="draft.technologies?.join(', ')" (ngModelChange)="updateList('technologies', $event)" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans rounded-md" placeholder="e.g. Angular, Tailwind CSS, PostgreSQL">
+               </div>
+             </section>
            </div>
 
-           <div class="mb-6">
-             <label class="block text-xs font-mono uppercase tracking-widest text-stone-500 mb-2">Short Description *</label>
-             <textarea [(ngModel)]="draft.description" rows="3" class="w-full border border-stone-200 p-3 bg-stone-50 focus:outline-none focus:border-stone-900 font-sans"></textarea>
-           </div>
-
-           <div class="flex justify-end gap-4 mt-8 pt-4 border-t border-stone-100">
-             <button (click)="cancelEdit()" class="px-6 py-2 border border-stone-200 text-stone-600 font-mono text-sm hover:bg-stone-50 transition-colors">Cancel</button>
-             <button (click)="saveProject()" class="px-6 py-2 bg-stone-900 text-white font-mono text-sm hover:bg-gold-500 hover:text-stone-900 transition-colors flex items-center gap-2"><mat-icon>save</mat-icon> Save Project</button>
+           <div class="p-6 md:p-8 bg-stone-50 border-t border-stone-200 flex justify-end gap-4 rounded-b-xl">
+             <button (click)="cancelEdit()" class="px-6 py-2 border border-stone-200 bg-white text-stone-600 font-mono text-sm hover:bg-stone-50 transition-colors rounded-md shadow-sm">Cancel</button>
+             <button (click)="saveProject()" class="px-6 py-2 bg-stone-900 text-white font-mono text-sm hover:bg-gold-500 hover:text-stone-900 transition-colors flex items-center gap-2 rounded-md shadow-sm"><mat-icon class="text-sm w-4 h-4" style="font-size: 16px;">save</mat-icon> Save Project</button>
            </div>
         </div>
       }
@@ -122,6 +266,10 @@ export class AdminProjectsComponent {
     this.isEditing = false;
     this.editingId = null;
     this.draft = {};
+  }
+
+  updateList(key: keyof Project, value: string) {
+    (this.draft as any)[key] = value.split(',').map(s => s.trim()).filter(s => !!s);
   }
 
   async saveProject() {

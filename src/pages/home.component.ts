@@ -19,18 +19,14 @@ import { doc, getDoc } from 'firebase/firestore';
         </span>
 
         <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif font-medium text-stone-800 leading-[0.9] tracking-tight mb-12">
-          Digital <br>
-          <span class="italic text-stone-400 font-normal">Creator</span> & <br>
-          Problem Solver.
+          {{ homeContent()?.titleLine1 || 'Digital' }} <br>
+          <span class="italic text-stone-400 font-normal">{{ homeContent()?.titleLine2 || 'Creator' }}</span> & <br>
+          {{ homeContent()?.titleLine3 || 'Problem Solver.' }}
         </h1>
         
         <div class="flex flex-col md:flex-row gap-12 items-start max-w-4xl border-t border-gold-200 pt-10">
            <p class="text-xl md:text-2xl text-stone-600 font-sans font-light leading-relaxed flex-1">
-             @if(homeContent()) {
-               {{ homeContent() }}
-             } @else {
-               Hi, I'm <span class="text-stone-900 font-bold">Meet Joshi</span>. I craft high-performance digital experiences with a focus on <span class="text-stone-800 font-medium">soft aesthetics</span> and <span class="text-stone-800 font-medium">robust architecture</span>.
-             }
+             {{ homeContent()?.descStart || "Hi, I'm" }} <span class="text-stone-900 font-bold">{{ homeContent()?.name || 'Meet Joshi' }}</span>. {{ homeContent()?.descMid || 'I craft high-performance digital experiences with a focus on' }} <span class="text-stone-800 font-medium">{{ homeContent()?.highlight1 || 'soft aesthetics' }}</span> {{ homeContent()?.descEnd || 'and' }} <span class="text-stone-800 font-medium">{{ homeContent()?.highlight2 || 'robust architecture.' }}</span>
            </p>
            
            <div class="flex flex-col gap-4 w-full md:w-auto">
@@ -97,7 +93,7 @@ export class HomeComponent implements OnInit {
   
   projectsSignal = toSignal(this.dataService.getProjects());
   
-  public homeContent = signal<string>('');
+  public homeContent = signal<any>(null);
 
   featuredProjects = computed(() => {
     return this.projectsSignal()?.slice(0, 4);
@@ -115,7 +111,7 @@ export class HomeComponent implements OnInit {
     try {
       const snap = await getDoc(doc(this.fb.db, 'siteContent', 'homeContent'));
       if (snap.exists()) {
-        this.homeContent.set(snap.data()['content']);
+        this.homeContent.set(snap.data());
       }
     } catch (e) {
       console.warn("Could not load home content (this is normal if first time setup):", e);
